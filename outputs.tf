@@ -18,7 +18,7 @@ output "cluster_autoscaler_release_name" {
 
 output "vpc_cni_iam_role_arn" {
   description = "ARN of the IAM role for VPC CNI"
-  value       = aws_iam_role.vpc_cni.arn
+  value       = aws_iam_role.vpc_cni_role.arn
 }
 
 output "vpc_cni_release_name" {

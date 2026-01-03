@@ -4,7 +4,7 @@
 ################################################################################
 
 # IAM Role for VPC CNI (IRSA)
-resource "aws_iam_role" "vpc_cni" {
+resource "aws_iam_role" "vpc_cni_role" {
   name                 = "${var.cluster_name}-vpc-cni"
   permissions_boundary = var.iam_role_permissions_boundary
   assume_role_policy   = data.aws_iam_policy_document.vpc_cni_assume_role.json
@@ -12,8 +12,8 @@ resource "aws_iam_role" "vpc_cni" {
   tags = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "vpc_cni" {
-  role       = aws_iam_role.vpc_cni.name
+resource "aws_iam_role_policy_attachment" "vpc_cni_pa" {
+  role       = aws_iam_role.vpc_cni_role.name
   policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
@@ -47,7 +47,7 @@ resource "helm_release" "vpc_cni" {
     })
   ]
 
-  depends_on = [aws_iam_role_policy_attachment.vpc_cni]
+  depends_on = [aws_iam_role_policy_attachment.vpc_cni_pa]
 }
 
 # Annotate the existing aws-node service account with IRSA role
@@ -61,10 +61,10 @@ resource "kubernetes_annotations" "vpc_cni_sa" {
   }
 
   annotations = {
-    "eks.amazonaws.com/role-arn" = aws_iam_role.vpc_cni.arn
+    "eks.amazonaws.com/role-arn" = aws_iam_role.vpc_cni_role.arn
   }
 
   force = true
 
-  depends_on = [aws_iam_role.vpc_cni]
+  depends_on = [aws_iam_role.vpc_cni_role]
 }

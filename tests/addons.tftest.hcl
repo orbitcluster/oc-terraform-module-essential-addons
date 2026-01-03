@@ -26,7 +26,7 @@ run "plan" {
 
   # Verify VPC CNI IAM role is created
   assert {
-    condition     = aws_iam_role.vpc_cni.name == "test-cluster-vpc-cni"
+    condition     = aws_iam_role.vpc_cni_role.name == "test-cluster-vpc-cni"
     error_message = "VPC CNI IAM role name did not match expected value"
   }
 
