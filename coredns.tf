@@ -5,8 +5,6 @@
 
 # Helm Release for CoreDNS
 resource "helm_release" "coredns" {
-  count = var.enable_coredns ? 1 : 0
-
   name       = "coredns"
   repository = "https://coredns.github.io/helm"
   chart      = "coredns"
@@ -47,13 +45,13 @@ resource "helm_release" "coredns" {
           plugins = [
             { name = "errors" },
             {
-              name = "health"
+              name        = "health"
               configBlock = "lameduck 5s"
             },
             { name = "ready" },
             {
-              name       = "kubernetes"
-              parameters = "cluster.local in-addr.arpa ip6.arpa"
+              name        = "kubernetes"
+              parameters  = "cluster.local in-addr.arpa ip6.arpa"
               configBlock = <<-EOT
                 pods insecure
                 fallthrough in-addr.arpa ip6.arpa

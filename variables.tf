@@ -27,46 +27,6 @@ variable "cluster_oidc_issuer_url" {
 
 ##################################################
 
-################ADDON TOGGLES#####################
-
-variable "enable_cluster_autoscaler" {
-  description = "Enable Cluster Autoscaler addon"
-  type        = bool
-  default     = true
-}
-
-variable "enable_vpc_cni" {
-  description = "Enable AWS VPC CNI addon"
-  type        = bool
-  default     = true
-}
-
-variable "enable_coredns" {
-  description = "Enable CoreDNS addon"
-  type        = bool
-  default     = true
-}
-
-variable "enable_aws_lb_controller" {
-  description = "Enable AWS Load Balancer Controller addon"
-  type        = bool
-  default     = true
-}
-
-variable "enable_metrics_server" {
-  description = "Enable Metrics Server addon"
-  type        = bool
-  default     = true
-}
-
-variable "enable_pod_identity_agent" {
-  description = "Enable EKS Pod Identity Agent addon"
-  type        = bool
-  default     = true
-}
-
-##################################################
-
 ################ADDON VERSIONS####################
 
 variable "cluster_autoscaler_version" {

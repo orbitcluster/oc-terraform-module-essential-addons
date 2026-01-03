@@ -16,13 +16,5 @@ module "essential_addons" {
   vpc_id = "<vpc-id>"     # Replace with VPC ID
   region = "us-east-1"
 
-  # Addon toggles (all enabled by default)
-  enable_cluster_autoscaler  = true
-  enable_vpc_cni             = true
-  enable_coredns             = true
-  enable_aws_lb_controller   = true
-  enable_metrics_server      = true
-  enable_pod_identity_agent  = true
-
   tags = local.tags
 }

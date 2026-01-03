@@ -5,8 +5,6 @@
 
 # IAM Role for AWS Load Balancer Controller (IRSA)
 resource "aws_iam_role" "aws_lb_controller" {
-  count = var.enable_aws_lb_controller ? 1 : 0
-
   name                 = "${var.cluster_name}-aws-lb-controller"
   permissions_boundary = var.iam_role_permissions_boundary
   assume_role_policy   = data.aws_iam_policy_document.aws_lb_controller_assume_role.json
@@ -15,17 +13,13 @@ resource "aws_iam_role" "aws_lb_controller" {
 }
 
 resource "aws_iam_role_policy" "aws_lb_controller" {
-  count = var.enable_aws_lb_controller ? 1 : 0
-
   name   = "${var.cluster_name}-aws-lb-controller"
-  role   = aws_iam_role.aws_lb_controller[0].id
+  role   = aws_iam_role.aws_lb_controller.id
   policy = data.aws_iam_policy_document.aws_lb_controller.json
 }
 
 # Helm Release for AWS Load Balancer Controller
 resource "helm_release" "aws_lb_controller" {
-  count = var.enable_aws_lb_controller ? 1 : 0
-
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
@@ -41,7 +35,7 @@ resource "helm_release" "aws_lb_controller" {
         create = true
         name   = "aws-load-balancer-controller"
         annotations = {
-          "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb_controller[0].arn
+          "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb_controller.arn
         }
       }
       replicaCount = 2

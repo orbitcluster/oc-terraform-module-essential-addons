@@ -5,8 +5,6 @@
 
 # IAM Role for Cluster Autoscaler (IRSA)
 resource "aws_iam_role" "cluster_autoscaler" {
-  count = var.enable_cluster_autoscaler ? 1 : 0
-
   name                 = "${var.cluster_name}-cluster-autoscaler"
   permissions_boundary = var.iam_role_permissions_boundary
   assume_role_policy   = data.aws_iam_policy_document.cluster_autoscaler_assume_role.json
@@ -15,17 +13,13 @@ resource "aws_iam_role" "cluster_autoscaler" {
 }
 
 resource "aws_iam_role_policy" "cluster_autoscaler" {
-  count = var.enable_cluster_autoscaler ? 1 : 0
-
   name   = "${var.cluster_name}-cluster-autoscaler"
-  role   = aws_iam_role.cluster_autoscaler[0].id
+  role   = aws_iam_role.cluster_autoscaler.id
   policy = data.aws_iam_policy_document.cluster_autoscaler.json
 }
 
 # Helm Release for Cluster Autoscaler
 resource "helm_release" "cluster_autoscaler" {
-  count = var.enable_cluster_autoscaler ? 1 : 0
-
   name       = "cluster-autoscaler"
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
@@ -43,13 +37,13 @@ resource "helm_release" "cluster_autoscaler" {
           create = true
           name   = "cluster-autoscaler"
           annotations = {
-            "eks.amazonaws.com/role-arn" = aws_iam_role.cluster_autoscaler[0].arn
+            "eks.amazonaws.com/role-arn" = aws_iam_role.cluster_autoscaler.arn
           }
         }
       }
       extraArgs = {
-        balance-similar-node-groups  = true
-        skip-nodes-with-system-pods  = false
+        balance-similar-node-groups = true
+        skip-nodes-with-system-pods = false
       }
     })
   ]

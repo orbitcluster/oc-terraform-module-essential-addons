@@ -1,6 +1,6 @@
 # oc-terraform-module-essential-addons
 
-Terraform module for deploying essential EKS addons using official Helm releases and AWS EKS addons.
+Terraform module for deploying essential EKS addons using official Helm releases and AWS EKS addons. All addons are mandatory and deployed together.
 
 ## Addons Included
 
@@ -37,14 +37,6 @@ module "essential_addons" {
   # Networking
   vpc_id = module.networking.vpc_id
   region = "us-east-1"
-
-  # Optional: Toggle addons (all enabled by default)
-  enable_cluster_autoscaler  = true
-  enable_vpc_cni             = true
-  enable_coredns             = true
-  enable_aws_lb_controller   = true
-  enable_metrics_server      = true
-  enable_pod_identity_agent  = true
 
   # Optional: Version overrides
   # cluster_autoscaler_version = "9.43.2"
@@ -98,12 +90,6 @@ provider "kubernetes" {
 | cluster_oidc_issuer_url | URL of the OIDC issuer | `string` | n/a | yes |
 | vpc_id | VPC ID where the EKS cluster is deployed | `string` | n/a | yes |
 | region | AWS region | `string` | n/a | yes |
-| enable_cluster_autoscaler | Enable Cluster Autoscaler | `bool` | `true` | no |
-| enable_vpc_cni | Enable VPC CNI | `bool` | `true` | no |
-| enable_coredns | Enable CoreDNS | `bool` | `true` | no |
-| enable_aws_lb_controller | Enable AWS Load Balancer Controller | `bool` | `true` | no |
-| enable_metrics_server | Enable Metrics Server | `bool` | `true` | no |
-| enable_pod_identity_agent | Enable Pod Identity Agent | `bool` | `true` | no |
 | tags | Tags to apply to all resources | `map(string)` | `{}` | no |
 | iam_role_permissions_boundary | ARN of permissions boundary for IAM roles | `string` | `null` | no |
 
@@ -192,12 +178,6 @@ No modules.
 | <a name="input_cluster_oidc_issuer_url"></a> [cluster\_oidc\_issuer\_url](#input\_cluster\_oidc\_issuer\_url) | URL of the OIDC issuer for the EKS cluster | `string` | n/a | yes |
 | <a name="input_cluster_oidc_provider_arn"></a> [cluster\_oidc\_provider\_arn](#input\_cluster\_oidc\_provider\_arn) | ARN of the OIDC provider for IRSA (IAM Roles for Service Accounts) | `string` | n/a | yes |
 | <a name="input_coredns_version"></a> [coredns\_version](#input\_coredns\_version) | Version of the CoreDNS Helm chart | `string` | `"1.36.2"` | no |
-| <a name="input_enable_aws_lb_controller"></a> [enable\_aws\_lb\_controller](#input\_enable\_aws\_lb\_controller) | Enable AWS Load Balancer Controller addon | `bool` | `true` | no |
-| <a name="input_enable_cluster_autoscaler"></a> [enable\_cluster\_autoscaler](#input\_enable\_cluster\_autoscaler) | Enable Cluster Autoscaler addon | `bool` | `true` | no |
-| <a name="input_enable_coredns"></a> [enable\_coredns](#input\_enable\_coredns) | Enable CoreDNS addon | `bool` | `true` | no |
-| <a name="input_enable_metrics_server"></a> [enable\_metrics\_server](#input\_enable\_metrics\_server) | Enable Metrics Server addon | `bool` | `true` | no |
-| <a name="input_enable_pod_identity_agent"></a> [enable\_pod\_identity\_agent](#input\_enable\_pod\_identity\_agent) | Enable EKS Pod Identity Agent addon | `bool` | `true` | no |
-| <a name="input_enable_vpc_cni"></a> [enable\_vpc\_cni](#input\_enable\_vpc\_cni) | Enable AWS VPC CNI addon | `bool` | `true` | no |
 | <a name="input_iam_role_permissions_boundary"></a> [iam\_role\_permissions\_boundary](#input\_iam\_role\_permissions\_boundary) | ARN of the permissions boundary to attach to IAM roles | `string` | `null` | no |
 | <a name="input_metrics_server_version"></a> [metrics\_server\_version](#input\_metrics\_server\_version) | Version of the Metrics Server Helm chart | `string` | `"3.12.2"` | no |
 | <a name="input_pod_identity_agent_version"></a> [pod\_identity\_agent\_version](#input\_pod\_identity\_agent\_version) | Version of the EKS Pod Identity Agent addon | `string` | `null` | no |
