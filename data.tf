@@ -39,8 +39,8 @@ data "aws_iam_policy_document" "cluster_autoscaler_assume_role" {
   }
 }
 
-# checkov:skip=CKV_AWS_356:Describe actions require '*' resource - AWS API limitation
 data "aws_iam_policy_document" "cluster_autoscaler" {
+  # checkov:skip=CKV_AWS_356:Describe actions require '*' resource - AWS API limitation
   statement {
     effect = "Allow"
     actions = [
@@ -132,9 +132,9 @@ data "aws_iam_policy_document" "aws_lb_controller_assume_role" {
   }
 }
 
-# checkov:skip=CKV_AWS_356:ELB controller requires '*' for Describe actions - AWS API limitation
-# checkov:skip=CKV_AWS_111:Write actions are constrained by resource tags and conditions
 data "aws_iam_policy_document" "aws_lb_controller" {
+  # checkov:skip=CKV_AWS_356:ELB controller requires '*' for Describe actions - AWS API limitation
+  # checkov:skip=CKV_AWS_111:Write actions are constrained by resource tags and conditions
   statement {
     effect    = "Allow"
     actions   = ["iam:CreateServiceLinkedRole"]
