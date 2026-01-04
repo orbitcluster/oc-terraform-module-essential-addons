@@ -4,17 +4,17 @@
 ################################################################################
 
 # IAM Role for AWS Load Balancer Controller (IRSA)
-resource "aws_iam_role" "aws_lb_controller" {
-  name                 = "${var.cluster_name}-aws-lb-controller"
+resource "aws_iam_role" "aws_lb_controller_role" {
+  name                 = "${var.cluster_name}-aws-lb-controller-role"
   permissions_boundary = var.iam_role_permissions_boundary
   assume_role_policy   = data.aws_iam_policy_document.aws_lb_controller_assume_role.json
 
-  tags = var.tags
+  tags = local.common_tags
 }
 
-resource "aws_iam_role_policy" "aws_lb_controller" {
-  name   = "${var.cluster_name}-aws-lb-controller"
-  role   = aws_iam_role.aws_lb_controller.id
+resource "aws_iam_role_policy" "aws_lb_controller_pa" {
+  name   = "${var.cluster_name}-aws-lb-controller-policy"
+  role   = aws_iam_role.aws_lb_controller_role.id
   policy = data.aws_iam_policy_document.aws_lb_controller.json
 }
 
@@ -35,12 +35,12 @@ resource "helm_release" "aws_lb_controller" {
         create = true
         name   = "aws-load-balancer-controller"
         annotations = {
-          "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb_controller.arn
+          "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb_controller_role.arn
         }
       }
       replicaCount = 2
     })
   ]
 
-  depends_on = [aws_iam_role_policy.aws_lb_controller]
+  depends_on = [aws_iam_role_policy.aws_lb_controller_pa]
 }

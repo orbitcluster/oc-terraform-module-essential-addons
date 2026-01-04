@@ -5,7 +5,7 @@
 
 # IAM Role for VPC CNI (IRSA)
 resource "aws_iam_role" "vpc_cni_role" {
-  name                 = "${var.cluster_name}-vpc-cni"
+  name                 = "${var.cluster_name}-vpc-cni-role"
   permissions_boundary = var.iam_role_permissions_boundary
   assume_role_policy   = data.aws_iam_policy_document.vpc_cni_assume_role.json
 

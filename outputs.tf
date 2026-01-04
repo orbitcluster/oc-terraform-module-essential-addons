@@ -41,7 +41,7 @@ output "coredns_release_name" {
 
 output "aws_lb_controller_iam_role_arn" {
   description = "ARN of the IAM role for AWS Load Balancer Controller"
-  value       = aws_iam_role.aws_lb_controller.arn
+  value       = aws_iam_role.aws_lb_controller_role.arn
 }
 
 output "aws_lb_controller_release_name" {
