@@ -1,6 +1,8 @@
 # EKS Cluster Essential Addons
 
-Terraform module for deploying essential EKS addons using official Helm releases and AWS EKS addons. All addons are mandatory and deployed together.
+- Terraform module for deploying essential EKS addons using official Helm releases and AWS EKS addons. All addons are mandatory and deployed together. Please note that this module needs to be run after the eks-infra has been deployed.
+
+- Please check the [oc-terraform-module-eks-setup](https://github.com/orbitcluster/oc-terraform-module-eks-setup) for more details. You will see that, in this repository, we are calling this module after the eks-infra has been deployed.
 
 ## Addons Included
 
