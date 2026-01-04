@@ -12,70 +12,8 @@ resource "helm_release" "coredns" {
   namespace  = local.kube_system_namespace
 
   values = [
-    yamlencode({
-      service = {
-        clusterIP = "172.20.0.10"
-      }
-      serviceAccount = {
-        create = true
-        name   = "coredns"
-      }
-      deployment = {
-        name = "coredns"
-      }
-      replicaCount = 2
-      resources = {
-        limits = {
-          cpu    = "100m"
-          memory = "128Mi"
-        }
-        requests = {
-          cpu    = "100m"
-          memory = "70Mi"
-        }
-      }
-      servers = [
-        {
-          zones = [
-            {
-              zone = "."
-            }
-          ]
-          port = 53
-          plugins = [
-            { name = "errors" },
-            {
-              name        = "health"
-              configBlock = "lameduck 5s"
-            },
-            { name = "ready" },
-            {
-              name        = "kubernetes"
-              parameters  = "cluster.local in-addr.arpa ip6.arpa"
-              configBlock = <<-EOT
-                pods insecure
-                fallthrough in-addr.arpa ip6.arpa
-                ttl 30
-              EOT
-            },
-            {
-              name       = "prometheus"
-              parameters = "0.0.0.0:9153"
-            },
-            {
-              name       = "forward"
-              parameters = ". /etc/resolv.conf"
-            },
-            {
-              name       = "cache"
-              parameters = "30"
-            },
-            { name = "loop" },
-            { name = "reload" },
-            { name = "loadbalance" }
-          ]
-        }
-      ]
+    templatefile("${path.module}/coredns-values.yaml", {
+      cluster_dns_ip = local.cluster_dns_ip
     })
   ]
 }

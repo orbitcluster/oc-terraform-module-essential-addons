@@ -102,6 +102,12 @@ variable "region" {
   type        = string
 }
 
+variable "cluster_service_ipv4_cidr" {
+  description = "The CIDR block to assign Kubernetes service IP addresses from. (e.g. 10.100.0.0/16 or 172.20.0.0/16)"
+  type        = string
+  default     = "172.20.0.0/16"
+}
+
 ##################################################
 
 ################COMMON CONFIG#####################

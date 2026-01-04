@@ -24,4 +24,7 @@ locals {
       env    = var.env
     }
   )
+
+  # Calculate CoreDNS ClusterIP (10th IP in the Service CIDR)
+  cluster_dns_ip = cidrhost(var.cluster_service_ipv4_cidr, 10)
 }
