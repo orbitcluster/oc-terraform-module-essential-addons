@@ -4,17 +4,17 @@
 ################################################################################
 
 # IAM Role for Cluster Autoscaler (IRSA)
-resource "aws_iam_role" "cluster_autoscaler" {
-  name                 = "${var.cluster_name}-cluster-autoscaler"
+resource "aws_iam_role" "cluster_autoscaler_role" {
+  name                 = "${var.cluster_name}-cluster-autoscaler-role"
   permissions_boundary = var.iam_role_permissions_boundary
   assume_role_policy   = data.aws_iam_policy_document.cluster_autoscaler_assume_role.json
 
-  tags = var.tags
+  tags = local.common_tags
 }
 
-resource "aws_iam_role_policy" "cluster_autoscaler" {
-  name   = "${var.cluster_name}-cluster-autoscaler"
-  role   = aws_iam_role.cluster_autoscaler.id
+resource "aws_iam_role_policy" "cluster_autoscaler_pa" {
+  name   = "${var.cluster_name}-cluster-autoscaler-policy"
+  role   = aws_iam_role.cluster_autoscaler_role.id
   policy = data.aws_iam_policy_document.cluster_autoscaler.json
 }
 
@@ -37,7 +37,7 @@ resource "helm_release" "cluster_autoscaler" {
           create = true
           name   = "cluster-autoscaler"
           annotations = {
-            "eks.amazonaws.com/role-arn" = aws_iam_role.cluster_autoscaler.arn
+            "eks.amazonaws.com/role-arn" = aws_iam_role.cluster_autoscaler_role.arn
           }
         }
       }
@@ -48,5 +48,5 @@ resource "helm_release" "cluster_autoscaler" {
     })
   ]
 
-  depends_on = [aws_iam_role_policy.cluster_autoscaler]
+  depends_on = [aws_iam_role_policy.cluster_autoscaler_pa]
 }

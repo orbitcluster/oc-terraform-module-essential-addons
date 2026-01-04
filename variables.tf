@@ -55,31 +55,31 @@ variable "cluster_oidc_issuer_url" {
 variable "cluster_autoscaler_version" {
   description = "Version of the Cluster Autoscaler Helm chart"
   type        = string
-  default     = "9.43.2"
+  default     = "9.54.0"
 }
 
 variable "vpc_cni_version" {
   description = "Version of the AWS VPC CNI Helm chart"
   type        = string
-  default     = "1.19.0"
+  default     = "1.21.1"
 }
 
 variable "coredns_version" {
   description = "Version of the CoreDNS Helm chart"
   type        = string
-  default     = "1.36.2"
+  default     = "1.45.0"
 }
 
 variable "aws_lb_controller_version" {
   description = "Version of the AWS Load Balancer Controller Helm chart"
   type        = string
-  default     = "1.11.0"
+  default     = "1.17.0"
 }
 
 variable "metrics_server_version" {
   description = "Version of the Metrics Server Helm chart"
   type        = string
-  default     = "3.12.2"
+  default     = "3.13.0"
 }
 
 variable "pod_identity_agent_version" {

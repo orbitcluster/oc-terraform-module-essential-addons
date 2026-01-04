@@ -1,6 +1,8 @@
+
+data "aws_partition" "current" {}
+
 locals {
-  account_id = data.aws_caller_identity.current.account_id
-  partition  = data.aws_partition.current.partition
+  partition = data.aws_partition.current.partition
 
   # Extract OIDC issuer ID from the URL
   oidc_issuer_id = replace(var.cluster_oidc_issuer_url, "https://", "")
