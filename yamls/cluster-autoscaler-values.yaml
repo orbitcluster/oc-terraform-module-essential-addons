@@ -10,6 +10,9 @@
 
 # -----------------------------------------------------------------------------
 # Image Configuration [DEFAULT]
+# Purpose: Defines the container image used for the Cluster Autoscaler.
+# Importance: Using the official Kubernetes registry ensures security and
+#             compatibility. IfNotPresent policy reduces image pull latency.
 # -----------------------------------------------------------------------------
 image:
   repository: registry.k8s.io/autoscaling/cluster-autoscaler  # [DEFAULT]
@@ -20,12 +23,20 @@ imagePullSecrets: []                                          # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Naming Overrides [DEFAULT]
+# Purpose: Allows customization of Kubernetes resource names.
+# Importance: Useful for multi-tenant clusters or when naming conflicts exist.
 # -----------------------------------------------------------------------------
 nameOverride: ""                                              # [DEFAULT]
 fullnameOverride: ""                                          # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Auto-Discovery Configuration (AWS EKS)
+# Purpose: Enables automatic discovery of AWS Auto Scaling Groups (ASGs) that
+#          should be managed by the Cluster Autoscaler.
+# Importance: CRITICAL - Without proper auto-discovery, the autoscaler cannot
+#             find or manage any node groups. ASGs must have matching tags.
+# How it works: Autoscaler queries AWS for ASGs with the specified tags and
+#               automatically includes them in scaling decisions.
 # -----------------------------------------------------------------------------
 autoDiscovery:
   clusterName: ${cluster_name}                                # [CUSTOM] Required for EKS
@@ -35,12 +46,18 @@ autoDiscovery:
 
 # -----------------------------------------------------------------------------
 # Cloud Provider Configuration
+# Purpose: Specifies which cloud provider APIs to use for scaling operations.
+# Importance: CRITICAL - Must match your cloud environment. Determines which
+#             SDK/API the autoscaler uses to interact with node infrastructure.
 # -----------------------------------------------------------------------------
 cloudProvider: aws                                            # [CUSTOM] Required for EKS
 awsRegion: ${region}                                          # [CUSTOM] Required for EKS
 
 # -----------------------------------------------------------------------------
 # Deployment Configuration [DEFAULT]
+# Purpose: Controls how the autoscaler deployment behaves.
+# Importance: Single replica is sufficient as autoscaler uses leader election.
+#             RollingUpdate ensures zero-downtime during upgrades.
 # -----------------------------------------------------------------------------
 replicaCount: 1                                               # [DEFAULT]
 
@@ -49,6 +66,14 @@ updateStrategy:
 
 # -----------------------------------------------------------------------------
 # RBAC & Service Account Configuration
+# Purpose: Creates Kubernetes RBAC resources and configures the Service Account
+#          for the Cluster Autoscaler to interact with the Kubernetes API.
+# Importance: CRITICAL for security and functionality:
+#   - rbac.create: Autoscaler needs permissions to list/watch pods, nodes, etc.
+#   - clusterScoped: Must be true as autoscaler operates across all namespaces.
+#   - serviceAccount with IRSA annotation: Links K8s identity to AWS IAM role,
+#     allowing the pod to call AWS APIs (DescribeASG, SetDesiredCapacity, etc.)
+#     without hardcoded credentials.
 # -----------------------------------------------------------------------------
 rbac:
   create: true                                                # [DEFAULT]
@@ -63,6 +88,11 @@ rbac:
 
 # -----------------------------------------------------------------------------
 # Pod Configuration [DEFAULT]
+# Purpose: Defines metadata and security settings for the autoscaler pod.
+# Importance: Security best practices require:
+#   - runAsNonRoot: Prevents container from running as root user
+#   - runAsUser/Group: Explicit non-root UID/GID (1001)
+#   - fsGroup: Ensures file permissions are correct for the group
 # -----------------------------------------------------------------------------
 podLabels: {}                                                 # [DEFAULT]
 podAnnotations: {}                                            # [DEFAULT]
@@ -73,6 +103,17 @@ podSecurityContext:
   runAsGroup: 1001                                            # [DEFAULT]
   fsGroup: 1001                                               # [DEFAULT]
 
+# -----------------------------------------------------------------------------
+# Container Security Context [DEFAULT]
+# Purpose: Applies fine-grained security controls at the container level.
+# Importance: Implements principle of least privilege:
+#   - allowPrivilegeEscalation: false - Prevents container processes from
+#     gaining more privileges than their parent process.
+#   - readOnlyRootFilesystem: true - Prevents writes to container filesystem,
+#     reducing attack surface if container is compromised.
+#   - drop ALL capabilities: Removes all Linux kernel capabilities, limiting
+#     what the container process can do at the OS level.
+# -----------------------------------------------------------------------------
 securityContext:
   allowPrivilegeEscalation: false                             # [DEFAULT]
   readOnlyRootFilesystem: true                                # [DEFAULT]
@@ -80,12 +121,26 @@ securityContext:
     drop:
       - ALL                                                   # [DEFAULT]
 
+# -----------------------------------------------------------------------------
+# Priority Class [DEFAULT]
+# Purpose: Ensures the autoscaler pod is scheduled with high priority.
+# Importance: CRITICAL - system-cluster-critical priority ensures:
+#   - Pod survives resource pressure and node evictions
+#   - Pod is scheduled before regular workloads
+#   - Autoscaler remains available when cluster needs to scale up
+# -----------------------------------------------------------------------------
 priorityClassName: system-cluster-critical                    # [DEFAULT]
 
 dnsPolicy: ClusterFirst                                       # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Resource Limits [DEFAULT]
+# Purpose: Defines CPU and memory resources for the autoscaler container.
+# Importance: Proper sizing ensures:
+#   - requests: Guaranteed minimum resources for stable operation
+#   - limits: Prevents runaway resource consumption
+#   - Both set equal: Creates a "Guaranteed" QoS class for predictable behavior
+# Note: For large clusters (100+ nodes), consider increasing memory limits.
 # -----------------------------------------------------------------------------
 resources:
   requests:
@@ -97,6 +152,12 @@ resources:
 
 # -----------------------------------------------------------------------------
 # Node Scheduling [DEFAULT]
+# Purpose: Controls where the autoscaler pod can be scheduled.
+# Importance: In production, consider:
+#   - nodeSelector: Schedule on specific nodes (e.g., system node pool)
+#   - tolerations: Allow scheduling on tainted nodes if needed
+#   - affinity: Prefer scheduling on nodes in specific AZs
+#   - topologySpreadConstraints: Spread replicas across failure domains
 # -----------------------------------------------------------------------------
 nodeSelector: {}                                              # [DEFAULT]
 tolerations: []                                               # [DEFAULT]
@@ -105,6 +166,12 @@ topologySpreadConstraints: []                                 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Probes Configuration [DEFAULT]
+# Purpose: Configures health checks for the autoscaler container.
+# Importance: Ensures reliable operation:
+#   - livenessProbe: Kubernetes restarts the pod if it becomes unresponsive
+#     (fails 3 consecutive checks at 10s intervals)
+#   - readinessProbe: Removes pod from service endpoints if not ready
+#   - Both use /health-check endpoint on port 8085
 # -----------------------------------------------------------------------------
 livenessProbe:
   httpGet:
@@ -128,6 +195,11 @@ readinessProbe:
 
 # -----------------------------------------------------------------------------
 # Service Configuration [DEFAULT]
+# Purpose: Creates a Kubernetes Service for the autoscaler.
+# Importance: Enables:
+#   - Prometheus/monitoring systems to scrape metrics
+#   - Internal cluster access to autoscaler endpoints
+#   - Health check access for service mesh integrations
 # -----------------------------------------------------------------------------
 service:
   create: true                                                # [DEFAULT]
@@ -137,6 +209,34 @@ service:
 
 # -----------------------------------------------------------------------------
 # Autoscaler Extra Arguments
+# Purpose: Fine-tunes the Cluster Autoscaler behavior through CLI flags.
+# Importance: These settings control HOW and WHEN scaling occurs.
+#
+# SCALE-UP BEHAVIOR:
+#   - scan-interval: How often to check for pending pods (10s = responsive)
+#   - max-node-provision-time: Max wait for new node to be ready (15m for EKS)
+#   - expander: Strategy for choosing which node group to scale:
+#     * least-waste: Minimizes leftover resources after scheduling (default)
+#     * random: Random selection among eligible node groups
+#     * most-pods: Chooses node group that can schedule most pending pods
+#     * priority: Uses defined priorities (requires configmap)
+#
+# SCALE-DOWN BEHAVIOR:
+#   - scale-down-enabled: Master switch for scale-down functionality
+#   - scale-down-utilization-threshold: Nodes below 50% usage are candidates
+#   - scale-down-unneeded-time: Must be underutilized for 10m before removal
+#   - scale-down-delay-after-add: Wait 10m after adding before scale-down
+#   - scale-down-delay-after-delete: Wait after removing a node (0s = immediate)
+#   - scale-down-delay-after-failure: Wait after failed scale-down attempt (3m)
+#   - scale-down-unready-time: How long unready nodes wait before removal (20m)
+#
+# SPECIAL BEHAVIOR:
+#   - balance-similar-node-groups: [CUSTOM] Distributes nodes evenly across
+#     similar node groups (typically maps to AZs in EKS). Essential for HA.
+#   - skip-nodes-with-system-pods: [CUSTOM] When false, allows scaling down
+#     nodes running kube-system pods (they get rescheduled elsewhere).
+#   - skip-nodes-with-local-storage: When false, allows scaling down nodes
+#     with pods using emptyDir volumes (data will be lost).
 # -----------------------------------------------------------------------------
 extraArgs:
   balance-similar-node-groups: true                           # [CUSTOM] Balance nodes across AZs
@@ -155,6 +255,11 @@ extraArgs:
 
 # -----------------------------------------------------------------------------
 # Additional Configuration [DEFAULT]
+# Purpose: Injection points for custom environment variables, volumes, etc.
+# Importance: Useful for:
+#   - extraEnv: Adding custom env vars (e.g., AWS_STS_REGIONAL_ENDPOINTS)
+#   - extraEnvConfigMaps/Secrets: Referencing external configuration
+#   - extraVolumes/Mounts: Adding certificates, configs, or credentials
 # -----------------------------------------------------------------------------
 extraEnv: []                                                  # [DEFAULT]
 extraEnvConfigMaps: {}                                        # [DEFAULT]
@@ -164,6 +269,13 @@ extraVolumeMounts: []                                         # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Prometheus/Monitoring Configuration [DEFAULT]
+# Purpose: Integrates with Prometheus for metrics collection and alerting.
+# Importance: When enabled:
+#   - serviceMonitor: Auto-configures Prometheus to scrape autoscaler metrics
+#     (cluster_autoscaler_*, unschedulable_pods, scaled_up/down_nodes, etc.)
+#   - prometheusRule: Creates alerting rules for autoscaler health
+#   - Essential for production visibility into scaling operations
+# Note: Requires Prometheus Operator to be installed in the cluster.
 # -----------------------------------------------------------------------------
 serviceMonitor:
   enabled: false                                              # [DEFAULT]
