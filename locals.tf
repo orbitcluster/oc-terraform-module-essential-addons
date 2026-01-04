@@ -13,4 +13,13 @@ locals {
 
   # Namespace for kube-system addons
   kube_system_namespace = "kube-system"
+
+  common_tags = merge(
+    var.tags,
+    {
+      bu_id  = var.bu_id
+      app_id = var.app_id
+      env    = var.env
+    }
+  )
 }

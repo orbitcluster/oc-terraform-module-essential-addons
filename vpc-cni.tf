@@ -9,12 +9,13 @@ resource "aws_iam_role" "vpc_cni_role" {
   permissions_boundary = var.iam_role_permissions_boundary
   assume_role_policy   = data.aws_iam_policy_document.vpc_cni_assume_role.json
 
-  tags = var.tags
+  tags = local.common_tags
 }
 
 resource "aws_iam_role_policy_attachment" "vpc_cni_pa" {
   role       = aws_iam_role.vpc_cni_role.name
   policy_arn = "arn:${local.partition}:iam::aws:policy/AmazonEKS_CNI_Policy"
+
 }
 
 # Helm Release for VPC CNI

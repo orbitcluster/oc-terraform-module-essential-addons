@@ -359,8 +359,8 @@ data "aws_iam_policy_document" "aws_lb_controller" {
   }
 
   statement {
-    effect    = "Allow"
-    actions   = ["elasticloadbalancing:AddTags"]
+    effect  = "Allow"
+    actions = ["elasticloadbalancing:AddTags"]
     resources = [
       "arn:${local.partition}:elasticloadbalancing:*:*:targetgroup/*/*",
       "arn:${local.partition}:elasticloadbalancing:*:*:loadbalancer/net/*/*",
