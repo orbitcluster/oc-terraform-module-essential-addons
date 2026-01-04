@@ -27,24 +27,10 @@ resource "helm_release" "cluster_autoscaler" {
   namespace  = local.kube_system_namespace
 
   values = [
-    yamlencode({
-      autoDiscovery = {
-        clusterName = var.cluster_name
-      }
-      awsRegion = var.region
-      rbac = {
-        serviceAccount = {
-          create = true
-          name   = "cluster-autoscaler"
-          annotations = {
-            "eks.amazonaws.com/role-arn" = aws_iam_role.cluster_autoscaler_role.arn
-          }
-        }
-      }
-      extraArgs = {
-        balance-similar-node-groups = true
-        skip-nodes-with-system-pods = false
-      }
+    templatefile("${path.module}/yamls/cluster-autoscaler-values.yaml", {
+      cluster_name = var.cluster_name
+      region       = var.region
+      role_arn     = aws_iam_role.cluster_autoscaler_role.arn
     })
   ]
 

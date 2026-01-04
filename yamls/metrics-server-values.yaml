@@ -1,0 +1,160 @@
+# =============================================================================
+# Metrics Server Helm Chart Values
+# Chart: https://github.com/kubernetes-sigs/metrics-server/tree/master/charts/metrics-server
+# =============================================================================
+# Legend:
+#   [CUSTOM]  - Values modified from chart defaults for this module
+#   [DEFAULT] - Chart default values (included for reference)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Image Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+image:
+  repository: registry.k8s.io/metrics-server/metrics-server  # [DEFAULT]
+  # tag: ""                                                  # [DEFAULT] Uses appVersion
+  pullPolicy: IfNotPresent                                   # [DEFAULT]
+
+imagePullSecrets: []                                         # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Naming Overrides [DEFAULT]
+# -----------------------------------------------------------------------------
+nameOverride: ""                                             # [DEFAULT]
+fullnameOverride: ""                                         # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Deployment Configuration
+# -----------------------------------------------------------------------------
+replicas: 2                                                  # [CUSTOM] Default is 1
+
+# -----------------------------------------------------------------------------
+# Service Account Configuration
+# -----------------------------------------------------------------------------
+serviceAccount:
+  create: true                                               # [DEFAULT]
+  annotations: {}                                            # [DEFAULT]
+  name: metrics-server                                       # [CUSTOM] Default is auto-generated
+  secrets: []                                                # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# RBAC Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+rbac:
+  create: true                                               # [DEFAULT]
+  pspEnabled: false                                          # [DEFAULT] PSP deprecated in K8s 1.25+
+
+# -----------------------------------------------------------------------------
+# API Service Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+apiService:
+  create: true                                               # [DEFAULT]
+  insecureSkipTLSVerify: true                                # [DEFAULT]
+  caBundle: ""                                               # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Pod Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+hostNetwork:
+  enabled: false                                             # [DEFAULT]
+
+containerPort: 10250                                         # [DEFAULT]
+
+updateStrategy:
+  type: RollingUpdate                                        # [DEFAULT]
+  rollingUpdate:
+    maxSurge: 0                                              # [DEFAULT]
+    maxUnavailable: 1                                        # [DEFAULT]
+
+podLabels: {}                                                # [DEFAULT]
+podAnnotations: {}                                           # [DEFAULT]
+
+podSecurityContext: {}                                       # [DEFAULT]
+
+securityContext:
+  allowPrivilegeEscalation: false                            # [DEFAULT]
+  readOnlyRootFilesystem: true                               # [DEFAULT]
+  runAsNonRoot: true                                         # [DEFAULT]
+  runAsUser: 1000                                            # [DEFAULT]
+  seccompProfile:
+    type: RuntimeDefault                                     # [DEFAULT]
+  capabilities:
+    drop:
+      - ALL                                                  # [DEFAULT]
+
+priorityClassName: system-cluster-critical                   # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Resource Limits
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 100m                                                # [CUSTOM] Default is lower
+    memory: 200Mi                                            # [CUSTOM] Default is lower
+  limits:
+    cpu: 100m                                                # [CUSTOM]
+    memory: 200Mi                                            # [CUSTOM]
+
+# -----------------------------------------------------------------------------
+# Node Scheduling [DEFAULT]
+# -----------------------------------------------------------------------------
+nodeSelector: {}                                             # [DEFAULT]
+tolerations: []                                              # [DEFAULT]
+affinity: {}                                                 # [DEFAULT]
+topologySpreadConstraints: []                                # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Probes Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /livez                                             # [DEFAULT]
+    port: https                                              # [DEFAULT]
+    scheme: HTTPS                                            # [DEFAULT]
+  initialDelaySeconds: 0                                     # [DEFAULT]
+  periodSeconds: 10                                          # [DEFAULT]
+  failureThreshold: 3                                        # [DEFAULT]
+
+readinessProbe:
+  httpGet:
+    path: /readyz                                            # [DEFAULT]
+    port: https                                              # [DEFAULT]
+    scheme: HTTPS                                            # [DEFAULT]
+  initialDelaySeconds: 20                                    # [DEFAULT]
+  periodSeconds: 10                                          # [DEFAULT]
+  failureThreshold: 3                                        # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Service Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP                                            # [DEFAULT]
+  port: 443                                                  # [DEFAULT]
+  annotations: {}                                            # [DEFAULT]
+  labels: {}                                                 # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Metrics Server Arguments
+# -----------------------------------------------------------------------------
+args:
+  - --kubelet-preferred-address-types=InternalIP             # [CUSTOM] Use internal IPs for EKS
+  - --kubelet-use-node-status-port                           # [CUSTOM] Use status port
+  - --metric-resolution=15s                                  # [CUSTOM] 15 second resolution
+
+# -----------------------------------------------------------------------------
+# Additional Volumes [DEFAULT]
+# -----------------------------------------------------------------------------
+extraVolumes: []                                             # [DEFAULT]
+extraVolumeMounts: []                                        # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Metrics/Monitoring [DEFAULT]
+# -----------------------------------------------------------------------------
+metrics:
+  enabled: false                                             # [DEFAULT]
+
+serviceMonitor:
+  enabled: false                                             # [DEFAULT]
+  additionalLabels: {}                                       # [DEFAULT]
+  interval: 1m                                               # [DEFAULT]
+  scrapeTimeout: 10s                                         # [DEFAULT]

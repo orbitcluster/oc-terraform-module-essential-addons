@@ -12,27 +12,6 @@ resource "helm_release" "metrics_server" {
   namespace  = local.kube_system_namespace
 
   values = [
-    yamlencode({
-      replicas = 2
-      serviceAccount = {
-        create = true
-        name   = "metrics-server"
-      }
-      resources = {
-        limits = {
-          cpu    = "100m"
-          memory = "200Mi"
-        }
-        requests = {
-          cpu    = "100m"
-          memory = "200Mi"
-        }
-      }
-      args = [
-        "--kubelet-preferred-address-types=InternalIP",
-        "--kubelet-use-node-status-port",
-        "--metric-resolution=15s"
-      ]
-    })
+    file("${path.module}/yamls/metrics-server-values.yaml")
   ]
 }

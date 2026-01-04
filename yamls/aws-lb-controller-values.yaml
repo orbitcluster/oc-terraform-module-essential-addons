@@ -1,9 +1,190 @@
-clusterName: ${cluster_name}
-region: ${region}
-vpcId: ${vpc_id}
+# =============================================================================
+# AWS Load Balancer Controller Helm Chart Values
+# Chart: https://github.com/aws/eks-charts/tree/master/stable/aws-load-balancer-controller
+# =============================================================================
+# Legend:
+#   [CUSTOM]  - Values modified from chart defaults for this module
+#   [DEFAULT] - Chart default values (included for reference)
+#   ${var}    - Terraform templatefile variables
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Image Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+image:
+  repository: public.ecr.aws/eks/aws-load-balancer-controller # [DEFAULT]
+  # tag: ""                                                   # [DEFAULT] Uses appVersion
+  pullPolicy: IfNotPresent                                    # [DEFAULT]
+
+imagePullSecrets: []                                          # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Naming Overrides [DEFAULT]
+# -----------------------------------------------------------------------------
+nameOverride: ""                                              # [DEFAULT]
+fullnameOverride: ""                                          # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Cluster Configuration
+# -----------------------------------------------------------------------------
+clusterName: ${cluster_name}                                  # [CUSTOM] Required
+region: ${region}                                             # [CUSTOM] Required
+vpcId: ${vpc_id}                                              # [CUSTOM] Required
+
+# -----------------------------------------------------------------------------
+# Deployment Configuration
+# -----------------------------------------------------------------------------
+replicaCount: 2                                               # [CUSTOM] HA mode (default is 2)
+
+updateStrategy:
+  type: RollingUpdate                                         # [DEFAULT]
+  rollingUpdate:
+    maxSurge: 1                                               # [DEFAULT]
+    maxUnavailable: 1                                         # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Service Account Configuration
+# -----------------------------------------------------------------------------
 serviceAccount:
-  create: true
-  name: aws-load-balancer-controller
+  create: true                                                # [CUSTOM]
+  name: aws-load-balancer-controller                          # [CUSTOM]
   annotations:
-    eks.amazonaws.com/role-arn: ${role_arn}
-replicaCount: 2
+    eks.amazonaws.com/role-arn: ${role_arn}                   # [CUSTOM] IRSA annotation
+  automountServiceAccountToken: true                          # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# RBAC Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+rbac:
+  create: true                                                # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Pod Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+podLabels: {}                                                 # [DEFAULT]
+podAnnotations: {}                                            # [DEFAULT]
+
+podSecurityContext:
+  fsGroup: 65534                                              # [DEFAULT]
+
+securityContext:
+  allowPrivilegeEscalation: false                             # [DEFAULT]
+  readOnlyRootFilesystem: true                                # [DEFAULT]
+  runAsNonRoot: true                                          # [DEFAULT]
+
+priorityClassName: system-cluster-critical                    # [DEFAULT]
+
+terminationGracePeriodSeconds: 10                             # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Resource Limits [DEFAULT]
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 100m                                                 # [DEFAULT]
+    memory: 128Mi                                             # [DEFAULT]
+  limits:
+    cpu: 200m                                                 # [DEFAULT]
+    memory: 256Mi                                             # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Node Scheduling [DEFAULT]
+# -----------------------------------------------------------------------------
+nodeSelector: {}                                              # [DEFAULT]
+tolerations: []                                               # [DEFAULT]
+configureDefaultAffinity: true                                # [DEFAULT] Enables pod anti-affinity
+
+affinity: {}                                                  # [DEFAULT] Custom affinity (overrides default)
+
+topologySpreadConstraints: []                                 # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Probes Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /healthz                                            # [DEFAULT]
+    port: 61779                                               # [DEFAULT]
+    scheme: HTTP                                              # [DEFAULT]
+  initialDelaySeconds: 30                                     # [DEFAULT]
+  timeoutSeconds: 10                                          # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Controller Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+enableShield: true                                            # [DEFAULT]
+enableWaf: true                                               # [DEFAULT]
+enableWafv2: true                                             # [DEFAULT]
+
+# Default target type for ingress/service annotations
+defaultTargetType: ip                                         # [DEFAULT] 'ip' or 'instance'
+
+# Default SSL Policy
+defaultSSLPolicy: ELBSecurityPolicy-2016-08                   # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Webhook Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+enableServiceMutatorWebhook: true                             # [DEFAULT]
+serviceMutatorWebhookConfig: {}                               # [DEFAULT]
+
+webhookBindPort: 9443                                         # [DEFAULT]
+
+# TLS certificates for webhook
+webhookTLS:
+  caCert: ""                                                  # [DEFAULT]
+  cert: ""                                                    # [DEFAULT]
+  key: ""                                                     # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Ingress Class Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+createIngressClassResource: true                              # [DEFAULT]
+ingressClass: alb                                             # [DEFAULT]
+ingressClassParams:
+  create: true                                                # [DEFAULT]
+  name: alb                                                   # [DEFAULT]
+  spec: {}                                                    # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Service Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+service:
+  port: 443                                                   # [DEFAULT]
+  targetPort: 9443                                            # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Additional Arguments [DEFAULT]
+# -----------------------------------------------------------------------------
+extraArgs: {}                                                 # [DEFAULT]
+
+# Example extra args:
+# extraArgs:
+#   aws-vpc-id: vpc-xxxxxxxx
+#   aws-region: us-west-2
+#   ingress-class: alb
+
+# -----------------------------------------------------------------------------
+# Additional Configuration [DEFAULT]
+# -----------------------------------------------------------------------------
+extraEnv: []                                                  # [DEFAULT]
+extraVolumes: []                                              # [DEFAULT]
+extraVolumeMounts: []                                         # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Metrics/Monitoring [DEFAULT]
+# -----------------------------------------------------------------------------
+serviceMonitor:
+  enabled: false                                              # [DEFAULT]
+  namespace: ""                                               # [DEFAULT]
+  interval: 60s                                               # [DEFAULT]
+  scrapeTimeout: 30s                                          # [DEFAULT]
+  additionalLabels: {}                                        # [DEFAULT]
+
+# -----------------------------------------------------------------------------
+# Pod Disruption Budget [DEFAULT]
+# -----------------------------------------------------------------------------
+podDisruptionBudget:
+  enabled: false                                              # [DEFAULT]
+  minAvailable: 1                                             # [DEFAULT]
+  maxUnavailable: 1                                           # [DEFAULT]
