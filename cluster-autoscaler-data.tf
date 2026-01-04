@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "cluster_autoscaler_assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "cluster_autoscaler" {
+data "aws_iam_policy_document" "cluster_autoscaler_policy_doc" {
   # checkov:skip=CKV_AWS_356:Describe actions require '*' resource - AWS API limitation
   statement {
     effect = "Allow"

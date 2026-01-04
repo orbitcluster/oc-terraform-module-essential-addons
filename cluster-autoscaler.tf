@@ -15,7 +15,7 @@ resource "aws_iam_role" "cluster_autoscaler_role" {
 resource "aws_iam_role_policy" "cluster_autoscaler_pa" {
   name   = "${var.cluster_name}-cluster-autoscaler-policy"
   role   = aws_iam_role.cluster_autoscaler_role.id
-  policy = data.aws_iam_policy_document.cluster_autoscaler.json
+  policy = data.aws_iam_policy_document.cluster_autoscaler_policy_doc.json
 }
 
 # Helm Release for Cluster Autoscaler
