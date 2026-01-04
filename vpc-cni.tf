@@ -27,24 +27,8 @@ resource "helm_release" "vpc_cni" {
   namespace  = local.kube_system_namespace
 
   values = [
-    yamlencode({
-      init = {
-        image = {
-          region = var.region
-        }
-      }
-      image = {
-        region = var.region
-      }
-      serviceAccount = {
-        create = false
-        name   = "aws-node"
-      }
-      originalMatchLabels = true
-      env = {
-        ENABLE_PREFIX_DELEGATION = "true"
-        WARM_PREFIX_TARGET       = "1"
-      }
+    templatefile("${path.module}/yamls/vpc-cni-values.yaml", {
+      region = var.region
     })
   ]
 

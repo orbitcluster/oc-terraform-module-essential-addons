@@ -102,6 +102,9 @@ variable "region" {
   type        = string
 }
 
+# Cluster Service IP CIDR is a dynamic value we will receive after eks cluster creation
+# This is required for coredns addon
+# From the CIDR range we will calculate the 10th IP as cluster dns ip which will be assign
 variable "cluster_service_ipv4_cidr" {
   description = "The CIDR block to assign Kubernetes service IP addresses from. (e.g. 10.100.0.0/16 or 172.20.0.0/16)"
   type        = string

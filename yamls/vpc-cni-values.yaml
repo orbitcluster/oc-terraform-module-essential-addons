@@ -1,0 +1,12 @@
+init:
+  image:
+    region: ${region}
+image:
+  region: ${region}
+serviceAccount:
+  create: false
+  name: aws-node
+originalMatchLabels: true
+env:
+  ENABLE_PREFIX_DELEGATION: "true"
+  WARM_PREFIX_TARGET: "1"

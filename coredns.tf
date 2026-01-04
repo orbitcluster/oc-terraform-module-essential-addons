@@ -12,7 +12,7 @@ resource "helm_release" "coredns" {
   namespace  = local.kube_system_namespace
 
   values = [
-    templatefile("${path.module}/coredns-values.yaml", {
+    templatefile("${path.module}/yamls/coredns-values.yaml", {
       cluster_dns_ip = local.cluster_dns_ip
     })
   ]

@@ -27,18 +27,11 @@ resource "helm_release" "aws_lb_controller" {
   namespace  = local.kube_system_namespace
 
   values = [
-    yamlencode({
-      clusterName = var.cluster_name
-      region      = var.region
-      vpcId       = var.vpc_id
-      serviceAccount = {
-        create = true
-        name   = "aws-load-balancer-controller"
-        annotations = {
-          "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb_controller_role.arn
-        }
-      }
-      replicaCount = 2
+    templatefile("${path.module}/yamls/aws-lb-controller-values.yaml", {
+      cluster_name = var.cluster_name
+      region       = var.region
+      vpc_id       = var.vpc_id
+      role_arn     = aws_iam_role.aws_lb_controller_role.arn
     })
   ]
 
