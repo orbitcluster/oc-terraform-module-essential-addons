@@ -45,7 +45,7 @@ vpcId: ${vpc_id}                                              # [CUSTOM] Require
 # -----------------------------------------------------------------------------
 # Deployment Configuration
 # Purpose: Controls the number of controller replicas and update behavior.
-# Importance: 
+# Importance:
 #   - replicaCount: 2 replicas provide high availability. If one pod fails,
 #     the other continues processing Ingress/Service changes.
 #   - RollingUpdate: Ensures zero-downtime during upgrades by maintaining
