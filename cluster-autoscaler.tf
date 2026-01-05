@@ -29,7 +29,7 @@ resource "helm_release" "cluster_autoscaler" {
   values = [
     templatefile("${path.module}/yamls/cluster-autoscaler-values.yaml", {
       cluster_name = var.cluster_name
-      region       = var.region
+      region       = data.aws_region.current.name
       role_arn     = aws_iam_role.cluster_autoscaler_role.arn
     })
   ]
