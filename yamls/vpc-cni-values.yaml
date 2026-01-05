@@ -5,7 +5,7 @@
 # Legend:
 #   [CUSTOM]  - Values modified from chart defaults for this module
 #   [DEFAULT] - Chart default values (included for reference)
-#   ${var}    - Terraform templatefile variables
+#   $${var}    - Terraform templatefile variables
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -19,18 +19,18 @@
 # -----------------------------------------------------------------------------
 init:
   image:
-    region: ${region}                                         # [CUSTOM] Match cluster region
-    account: 602401143452                                     # [DEFAULT] The account ID 602401143452 is AWS's official EKS ECR account that hosts the VPC CNI container images.
+    region: ${region} # [CUSTOM] Match cluster region
+    account: 602401143452 # [DEFAULT] The account ID 602401143452 is AWS's official EKS ECR account that hosts the VPC CNI container images.
     # tag: ""                                                 # [DEFAULT] Uses appVersion
-    pullPolicy: IfNotPresent                                  # [DEFAULT]
+    pullPolicy: IfNotPresent # [DEFAULT]
 
 image:
-  region: ${region}                                           # [CUSTOM] Match cluster region
-  account: 602401143452                                       # [DEFAULT] The account ID 602401143452 is AWS's official EKS ECR account that hosts the VPC CNI container images.
+  region: ${region} # [CUSTOM] Match cluster region
+  account: 602401143452 # [DEFAULT] The account ID 602401143452 is AWS's official EKS ECR account that hosts the VPC CNI container images.
   # tag: ""                                                   # [DEFAULT] Uses appVersion
-  pullPolicy: IfNotPresent                                    # [DEFAULT]
+  pullPolicy: IfNotPresent # [DEFAULT]
 
-imagePullSecrets: []                                          # [DEFAULT]
+imagePullSecrets: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Naming Overrides
@@ -41,8 +41,8 @@ imagePullSecrets: []                                          # [DEFAULT]
 #             - AWS documentation and troubleshooting guides
 #             - Existing monitoring and alerting rules
 # -----------------------------------------------------------------------------
-nameOverride: aws-node                                        # [DEFAULT]
-fullnameOverride: aws-node                                    # [DEFAULT]
+nameOverride: aws-node # [DEFAULT]
+fullnameOverride: aws-node # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Service Account Configuration
@@ -55,9 +55,9 @@ fullnameOverride: aws-node                                    # [DEFAULT]
 # Note: IRSA annotation is managed by EKS, not this Helm chart.
 # -----------------------------------------------------------------------------
 serviceAccount:
-  create: false                                               # [CUSTOM] Use pre-existing aws-node SA
-  name: aws-node                                              # [CUSTOM] Pre-existing service account
-  annotations: {}                                             # [DEFAULT] IRSA annotation added separately
+  create: false # [CUSTOM] Use pre-existing aws-node SA
+  name: aws-node # [CUSTOM] Pre-existing service account
+  annotations: {} # [DEFAULT] IRSA annotation added separately
 
 # -----------------------------------------------------------------------------
 # CRD Configuration [DEFAULT]
@@ -68,7 +68,7 @@ serviceAccount:
 #   - Must be true if using custom networking or security groups for pods
 # -----------------------------------------------------------------------------
 crd:
-  create: true                                                # [DEFAULT]
+  create: true # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Pod Configuration
@@ -80,12 +80,12 @@ crd:
 #   - Without this, you may see "selector does not match" errors during
 #     the migration from EKS addon to Helm-managed VPC CNI.
 # -----------------------------------------------------------------------------
-originalMatchLabels: true                                     # [CUSTOM] Required for EKS upgrade scenarios
+originalMatchLabels: true # [CUSTOM] Required for EKS upgrade scenarios
 
-podLabels: {}                                                 # [DEFAULT]
-podAnnotations: {}                                            # [DEFAULT]
+podLabels: {} # [DEFAULT]
+podAnnotations: {} # [DEFAULT]
 
-podSecurityContext: {}                                        # [DEFAULT]
+podSecurityContext: {} # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Container Security Context
@@ -98,11 +98,11 @@ podSecurityContext: {}                                        # [DEFAULT]
 # WARNING: These privileges are required - do not modify without testing.
 # -----------------------------------------------------------------------------
 securityContext:
-  privileged: true                                            # [DEFAULT] Required for network config
+  privileged: true # [DEFAULT] Required for network config
   capabilities:
     add:
-      - NET_ADMIN                                             # [DEFAULT]
-      - NET_RAW                                               # [DEFAULT]
+      - NET_ADMIN # [DEFAULT]
+      - NET_RAW # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Priority Class [DEFAULT]
@@ -113,7 +113,7 @@ securityContext:
 #   - CNI cannot be evicted due to resource pressure
 # Note: system-node-critical is higher than system-cluster-critical.
 # -----------------------------------------------------------------------------
-priorityClassName: system-node-critical                       # [DEFAULT]
+priorityClassName: system-node-critical # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # DaemonSet Configuration [DEFAULT]
@@ -125,9 +125,9 @@ priorityClassName: system-node-critical                       # [DEFAULT]
 # WARNING: Setting maxUnavailable too high can cause cluster-wide network outage.
 # -----------------------------------------------------------------------------
 updateStrategy:
-  type: RollingUpdate                                         # [DEFAULT]
+  type: RollingUpdate # [DEFAULT]
   rollingUpdate:
-    maxUnavailable: 10%                                       # [DEFAULT]
+    maxUnavailable: 10% # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Resource Limits [DEFAULT]
@@ -140,11 +140,11 @@ updateStrategy:
 # -----------------------------------------------------------------------------
 resources:
   requests:
-    cpu: 25m                                                  # [DEFAULT]
-    memory: 64Mi                                              # [DEFAULT]
+    cpu: 25m # [DEFAULT]
+    memory: 64Mi # [DEFAULT]
   limits:
-    cpu: 100m                                                 # [DEFAULT]
-    memory: 128Mi                                             # [DEFAULT]
+    cpu: 100m # [DEFAULT]
+    memory: 128Mi # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Node Scheduling [DEFAULT]
@@ -156,19 +156,19 @@ resources:
 #     only Linux nodes are targeted (no Windows support)
 #   - VPC CNI must run on EVERY EC2 node for pod networking to work
 # -----------------------------------------------------------------------------
-nodeSelector: {}                                              # [DEFAULT]
+nodeSelector: {} # [DEFAULT]
 tolerations:
-  - operator: Exists                                          # [DEFAULT] Tolerate all taints
+  - operator: Exists # [DEFAULT] Tolerate all taints
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
         - matchExpressions:
-            - key: kubernetes.io/os                           # [DEFAULT]
+            - key: kubernetes.io/os # [DEFAULT]
               operator: In
               values:
                 - linux
-            - key: eks.amazonaws.com/compute-type             # [DEFAULT]
+            - key: eks.amazonaws.com/compute-type # [DEFAULT]
               operator: NotIn
               values:
                 - fargate
@@ -213,29 +213,29 @@ affinity:
 # -----------------------------------------------------------------------------
 env:
   # IP Address Management
-  ENABLE_PREFIX_DELEGATION: "true"                            # [CUSTOM] Enable /28 prefix per ENI
-  WARM_PREFIX_TARGET: "1"                                     # [CUSTOM] Number of warm prefixes
-  WARM_IP_TARGET: "1"                                         # [DEFAULT]
-  MINIMUM_IP_TARGET: "1"                                      # [DEFAULT]
+  ENABLE_PREFIX_DELEGATION: "true" # [CUSTOM] Enable /28 prefix per ENI
+  WARM_PREFIX_TARGET: "1" # [CUSTOM] Number of warm prefixes
+  WARM_IP_TARGET: "1" # [DEFAULT]
+  MINIMUM_IP_TARGET: "1" # [DEFAULT]
 
   # Networking Configuration
-  AWS_VPC_K8S_CNI_LOGLEVEL: DEBUG                             # [DEFAULT]
-  AWS_VPC_K8S_CNI_VETHPREFIX: eni                             # [DEFAULT]
-  AWS_VPC_ENI_MTU: "9001"                                     # [DEFAULT] Jumbo frames
+  AWS_VPC_K8S_CNI_LOGLEVEL: DEBUG # [DEFAULT]
+  AWS_VPC_K8S_CNI_VETHPREFIX: eni # [DEFAULT]
+  AWS_VPC_ENI_MTU: "9001" # [DEFAULT] Jumbo frames
 
   # External SNAT Configuration
-  AWS_VPC_K8S_CNI_EXTERNALSNAT: "false"                       # [DEFAULT]
+  AWS_VPC_K8S_CNI_EXTERNALSNAT: "false" # [DEFAULT]
 
   # Custom Networking (for ENIConfig)
-  AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG: "false"                 # [DEFAULT]
-  ENI_CONFIG_LABEL_DEF: topology.kubernetes.io/zone           # [DEFAULT]
+  AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG: "false" # [DEFAULT]
+  ENI_CONFIG_LABEL_DEF: topology.kubernetes.io/zone # [DEFAULT]
 
   # Network Policy Support
-  ENABLE_NETWORK_POLICY: "false"                              # [DEFAULT]
+  ENABLE_NETWORK_POLICY: "false" # [DEFAULT]
 
   # IPv6 Configuration
-  ENABLE_IPV4: "true"                                         # [DEFAULT]
-  ENABLE_IPV6: "false"                                        # [DEFAULT]
+  ENABLE_IPV4: "true" # [DEFAULT]
+  ENABLE_IPV6: "false" # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # ENIConfig Custom Networking [DEFAULT]
@@ -248,9 +248,9 @@ env:
 # and security groups to use for pod ENIs in that zone.
 # -----------------------------------------------------------------------------
 eniConfig:
-  create: false                                               # [DEFAULT]
-  region: us-west-2                                           # [DEFAULT]
-  subnets: {}                                                 # [DEFAULT]
+  create: false # [DEFAULT]
+  region: us-west-2 # [DEFAULT]
+  subnets: {} # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Health Probes Configuration [DEFAULT]
@@ -269,9 +269,9 @@ livenessProbe:
       - /app/grpc-health-probe
       - -addr=:50051
       - -connect-timeout=5s
-      - -rpc-timeout=5s                                       # [DEFAULT]
-  initialDelaySeconds: 60                                     # [DEFAULT]
-  timeoutSeconds: 10                                          # [DEFAULT]
+      - -rpc-timeout=5s # [DEFAULT]
+  initialDelaySeconds: 60 # [DEFAULT]
+  timeoutSeconds: 10 # [DEFAULT]
 
 readinessProbe:
   exec:
@@ -279,9 +279,9 @@ readinessProbe:
       - /app/grpc-health-probe
       - -addr=:50051
       - -connect-timeout=5s
-      - -rpc-timeout=5s                                       # [DEFAULT]
-  initialDelaySeconds: 1                                      # [DEFAULT]
-  timeoutSeconds: 10                                          # [DEFAULT]
+      - -rpc-timeout=5s # [DEFAULT]
+  initialDelaySeconds: 1 # [DEFAULT]
+  timeoutSeconds: 10 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Additional Volumes [DEFAULT]
@@ -291,8 +291,8 @@ readinessProbe:
 #             - Custom CNI plugins
 #             - Additional certificates
 # -----------------------------------------------------------------------------
-extraVolumes: []                                              # [DEFAULT]
-extraVolumeMounts: []                                         # [DEFAULT]
+extraVolumes: [] # [DEFAULT]
+extraVolumeMounts: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Metrics/Monitoring [DEFAULT]
@@ -304,4 +304,4 @@ extraVolumeMounts: []                                         # [DEFAULT]
 # Note: Requires Prometheus Operator for ServiceMonitor support.
 # -----------------------------------------------------------------------------
 serviceMonitor:
-  enabled: false                                              # [DEFAULT]
+  enabled: false # [DEFAULT]
