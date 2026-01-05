@@ -5,7 +5,7 @@
 # Legend:
 #   [CUSTOM]  - Values modified from chart defaults for this module
 #   [DEFAULT] - Chart default values (included for reference)
-#   ${var}    - Terraform templatefile variables
+#   $${var}    - Terraform templatefile variables
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -15,19 +15,19 @@
 #             compatibility. IfNotPresent policy reduces image pull latency.
 # -----------------------------------------------------------------------------
 image:
-  repository: registry.k8s.io/autoscaling/cluster-autoscaler  # [DEFAULT]
+  repository: registry.k8s.io/autoscaling/cluster-autoscaler # [DEFAULT]
   # tag: ""                                                   # [DEFAULT] Uses appVersion
-  pullPolicy: IfNotPresent                                    # [DEFAULT]
+  pullPolicy: IfNotPresent # [DEFAULT]
 
-imagePullSecrets: []                                          # [DEFAULT]
+imagePullSecrets: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Naming Overrides [DEFAULT]
 # Purpose: Allows customization of Kubernetes resource names.
 # Importance: Useful for multi-tenant clusters or when naming conflicts exist.
 # -----------------------------------------------------------------------------
-nameOverride: ""                                              # [DEFAULT]
-fullnameOverride: ""                                          # [DEFAULT]
+nameOverride: "" # [DEFAULT]
+fullnameOverride: "" # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Auto-Discovery Configuration (AWS EKS)
@@ -39,10 +39,10 @@ fullnameOverride: ""                                          # [DEFAULT]
 #               automatically includes them in scaling decisions.
 # -----------------------------------------------------------------------------
 autoDiscovery:
-  clusterName: ${cluster_name}                                # [CUSTOM] Required for EKS
+  clusterName: ${cluster_name} # [CUSTOM] Required for EKS
   tags:
-    - k8s.io/cluster-autoscaler/enabled                       # [DEFAULT]
-    - k8s.io/cluster-autoscaler/${cluster_name}               # [CUSTOM]
+    - k8s.io/cluster-autoscaler/enabled # [DEFAULT]
+    - k8s.io/cluster-autoscaler/${cluster_name} # [CUSTOM]
 
 # -----------------------------------------------------------------------------
 # Cloud Provider Configuration
@@ -50,8 +50,8 @@ autoDiscovery:
 # Importance: CRITICAL - Must match your cloud environment. Determines which
 #             SDK/API the autoscaler uses to interact with node infrastructure.
 # -----------------------------------------------------------------------------
-cloudProvider: aws                                            # [CUSTOM] Required for EKS
-awsRegion: ${region}                                          # [CUSTOM] Required for EKS
+cloudProvider: aws # [CUSTOM] Required for EKS
+awsRegion: ${region} # [CUSTOM] Required for EKS
 
 # -----------------------------------------------------------------------------
 # Deployment Configuration [DEFAULT]
@@ -59,10 +59,10 @@ awsRegion: ${region}                                          # [CUSTOM] Require
 # Importance: Single replica is sufficient as autoscaler uses leader election.
 #             RollingUpdate ensures zero-downtime during upgrades.
 # -----------------------------------------------------------------------------
-replicaCount: 1                                               # [DEFAULT]
+replicaCount: 1 # [DEFAULT]
 
 updateStrategy:
-  type: RollingUpdate                                         # [DEFAULT]
+  type: RollingUpdate # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # RBAC & Service Account Configuration
@@ -76,15 +76,15 @@ updateStrategy:
 #     without hardcoded credentials.
 # -----------------------------------------------------------------------------
 rbac:
-  create: true                                                # [DEFAULT]
-  pspEnabled: false                                           # [DEFAULT]
-  clusterScoped: true                                         # [DEFAULT]
+  create: true # [DEFAULT]
+  pspEnabled: false # [DEFAULT]
+  clusterScoped: true # [DEFAULT]
   serviceAccount:
-    create: true                                              # [DEFAULT]
-    name: cluster-autoscaler                                  # [CUSTOM]
+    create: true # [DEFAULT]
+    name: cluster-autoscaler # [CUSTOM]
     annotations:
-      eks.amazonaws.com/role-arn: ${role_arn}                 # [CUSTOM] IRSA annotation
-    automountServiceAccountToken: true                        # [DEFAULT]
+      eks.amazonaws.com/role-arn: ${role_arn} # [CUSTOM] IRSA annotation
+    automountServiceAccountToken: true # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Pod Configuration [DEFAULT]
@@ -94,14 +94,14 @@ rbac:
 #   - runAsUser/Group: Explicit non-root UID/GID (1001)
 #   - fsGroup: Ensures file permissions are correct for the group
 # -----------------------------------------------------------------------------
-podLabels: {}                                                 # [DEFAULT]
-podAnnotations: {}                                            # [DEFAULT]
+podLabels: {} # [DEFAULT]
+podAnnotations: {} # [DEFAULT]
 
 podSecurityContext:
-  runAsNonRoot: true                                          # [DEFAULT]
-  runAsUser: 1001                                             # [DEFAULT]
-  runAsGroup: 1001                                            # [DEFAULT]
-  fsGroup: 1001                                               # [DEFAULT]
+  runAsNonRoot: true # [DEFAULT]
+  runAsUser: 1001 # [DEFAULT]
+  runAsGroup: 1001 # [DEFAULT]
+  fsGroup: 1001 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Container Security Context [DEFAULT]
@@ -115,11 +115,11 @@ podSecurityContext:
 #     what the container process can do at the OS level.
 # -----------------------------------------------------------------------------
 securityContext:
-  allowPrivilegeEscalation: false                             # [DEFAULT]
-  readOnlyRootFilesystem: true                                # [DEFAULT]
+  allowPrivilegeEscalation: false # [DEFAULT]
+  readOnlyRootFilesystem: true # [DEFAULT]
   capabilities:
     drop:
-      - ALL                                                   # [DEFAULT]
+      - ALL # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Priority Class [DEFAULT]
@@ -129,9 +129,9 @@ securityContext:
 #   - Pod is scheduled before regular workloads
 #   - Autoscaler remains available when cluster needs to scale up
 # -----------------------------------------------------------------------------
-priorityClassName: system-cluster-critical                    # [DEFAULT]
+priorityClassName: system-cluster-critical # [DEFAULT]
 
-dnsPolicy: ClusterFirst                                       # [DEFAULT]
+dnsPolicy: ClusterFirst # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Resource Limits [DEFAULT]
@@ -144,11 +144,11 @@ dnsPolicy: ClusterFirst                                       # [DEFAULT]
 # -----------------------------------------------------------------------------
 resources:
   requests:
-    cpu: 100m                                                 # [DEFAULT]
-    memory: 300Mi                                             # [DEFAULT]
+    cpu: 100m # [DEFAULT]
+    memory: 300Mi # [DEFAULT]
   limits:
-    cpu: 100m                                                 # [DEFAULT]
-    memory: 300Mi                                             # [DEFAULT]
+    cpu: 100m # [DEFAULT]
+    memory: 300Mi # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Node Scheduling [DEFAULT]
@@ -159,10 +159,10 @@ resources:
 #   - affinity: Prefer scheduling on nodes in specific AZs
 #   - topologySpreadConstraints: Spread replicas across failure domains
 # -----------------------------------------------------------------------------
-nodeSelector: {}                                              # [DEFAULT]
-tolerations: []                                               # [DEFAULT]
-affinity: {}                                                  # [DEFAULT]
-topologySpreadConstraints: []                                 # [DEFAULT]
+nodeSelector: {} # [DEFAULT]
+tolerations: [] # [DEFAULT]
+affinity: {} # [DEFAULT]
+topologySpreadConstraints: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Probes Configuration [DEFAULT]
@@ -175,23 +175,23 @@ topologySpreadConstraints: []                                 # [DEFAULT]
 # -----------------------------------------------------------------------------
 livenessProbe:
   httpGet:
-    path: /health-check                                       # [DEFAULT]
-    port: 8085                                                # [DEFAULT]
-  initialDelaySeconds: 0                                      # [DEFAULT]
-  periodSeconds: 10                                           # [DEFAULT]
-  timeoutSeconds: 3                                           # [DEFAULT]
-  failureThreshold: 3                                         # [DEFAULT]
-  successThreshold: 1                                         # [DEFAULT]
+    path: /health-check # [DEFAULT]
+    port: 8085 # [DEFAULT]
+  initialDelaySeconds: 0 # [DEFAULT]
+  periodSeconds: 10 # [DEFAULT]
+  timeoutSeconds: 3 # [DEFAULT]
+  failureThreshold: 3 # [DEFAULT]
+  successThreshold: 1 # [DEFAULT]
 
 readinessProbe:
   httpGet:
-    path: /health-check                                       # [DEFAULT]
-    port: 8085                                                # [DEFAULT]
-  initialDelaySeconds: 0                                      # [DEFAULT]
-  periodSeconds: 10                                           # [DEFAULT]
-  timeoutSeconds: 3                                           # [DEFAULT]
-  failureThreshold: 3                                         # [DEFAULT]
-  successThreshold: 1                                         # [DEFAULT]
+    path: /health-check # [DEFAULT]
+    port: 8085 # [DEFAULT]
+  initialDelaySeconds: 0 # [DEFAULT]
+  periodSeconds: 10 # [DEFAULT]
+  timeoutSeconds: 3 # [DEFAULT]
+  failureThreshold: 3 # [DEFAULT]
+  successThreshold: 1 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Service Configuration [DEFAULT]
@@ -202,10 +202,10 @@ readinessProbe:
 #   - Health check access for service mesh integrations
 # -----------------------------------------------------------------------------
 service:
-  create: true                                                # [DEFAULT]
-  annotations: {}                                             # [DEFAULT]
-  labels: {}                                                  # [DEFAULT]
-  portName: http                                              # [DEFAULT]
+  create: true # [DEFAULT]
+  annotations: {} # [DEFAULT]
+  labels: {} # [DEFAULT]
+  portName: http # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Autoscaler Extra Arguments
@@ -239,19 +239,19 @@ service:
 #     with pods using emptyDir volumes (data will be lost).
 # -----------------------------------------------------------------------------
 extraArgs:
-  balance-similar-node-groups: true                           # [CUSTOM] Balance nodes across AZs
-  skip-nodes-with-system-pods: false                          # [CUSTOM] Allow scaling down system pods
-  skip-nodes-with-local-storage: false                        # [DEFAULT]
-  expander: least-waste                                       # [DEFAULT]
-  scale-down-enabled: true                                    # [DEFAULT]
-  scale-down-delay-after-add: 10m                             # [DEFAULT]
-  scale-down-delay-after-delete: 0s                           # [DEFAULT]
-  scale-down-delay-after-failure: 3m                          # [DEFAULT]
-  scale-down-unneeded-time: 10m                               # [DEFAULT]
-  scale-down-unready-time: 20m                                # [DEFAULT]
-  scale-down-utilization-threshold: 0.5                       # [DEFAULT]
-  max-node-provision-time: 15m                                # [DEFAULT]
-  scan-interval: 10s                                          # [DEFAULT]
+  balance-similar-node-groups: true # [CUSTOM] Balance nodes across AZs
+  skip-nodes-with-system-pods: false # [CUSTOM] Allow scaling down system pods
+  skip-nodes-with-local-storage: false # [DEFAULT]
+  expander: least-waste # [DEFAULT]
+  scale-down-enabled: true # [DEFAULT]
+  scale-down-delay-after-add: 10m # [DEFAULT]
+  scale-down-delay-after-delete: 0s # [DEFAULT]
+  scale-down-delay-after-failure: 3m # [DEFAULT]
+  scale-down-unneeded-time: 10m # [DEFAULT]
+  scale-down-unready-time: 20m # [DEFAULT]
+  scale-down-utilization-threshold: 0.5 # [DEFAULT]
+  max-node-provision-time: 15m # [DEFAULT]
+  scan-interval: 10s # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Additional Configuration [DEFAULT]
@@ -261,11 +261,11 @@ extraArgs:
 #   - extraEnvConfigMaps/Secrets: Referencing external configuration
 #   - extraVolumes/Mounts: Adding certificates, configs, or credentials
 # -----------------------------------------------------------------------------
-extraEnv: []                                                  # [DEFAULT]
-extraEnvConfigMaps: {}                                        # [DEFAULT]
-extraEnvSecrets: {}                                           # [DEFAULT]
-extraVolumes: []                                              # [DEFAULT]
-extraVolumeMounts: []                                         # [DEFAULT]
+extraEnv: [] # [DEFAULT]
+extraEnvConfigMaps: {} # [DEFAULT]
+extraEnvSecrets: {} # [DEFAULT]
+extraVolumes: [] # [DEFAULT]
+extraVolumeMounts: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Prometheus/Monitoring Configuration [DEFAULT]
@@ -278,12 +278,12 @@ extraVolumeMounts: []                                         # [DEFAULT]
 # Note: Requires Prometheus Operator to be installed in the cluster.
 # -----------------------------------------------------------------------------
 serviceMonitor:
-  enabled: false                                              # [DEFAULT]
-  interval: 10s                                               # [DEFAULT]
-  namespace: monitoring                                       # [DEFAULT]
-  selector: {}                                                # [DEFAULT]
-  annotations: {}                                             # [DEFAULT]
+  enabled: false # [DEFAULT]
+  interval: 10s # [DEFAULT]
+  namespace: monitoring # [DEFAULT]
+  selector: {} # [DEFAULT]
+  annotations: {} # [DEFAULT]
 
 prometheusRule:
-  enabled: false                                              # [DEFAULT]
-  namespace: monitoring                                       # [DEFAULT]
+  enabled: false # [DEFAULT]
+  namespace: monitoring # [DEFAULT]

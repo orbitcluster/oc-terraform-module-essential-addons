@@ -5,7 +5,7 @@
 # Legend:
 #   [CUSTOM]  - Values modified from chart defaults for this module
 #   [DEFAULT] - Chart default values (included for reference)
-#   ${var}    - Terraform templatefile variables
+#   $${var}    - Terraform templatefile variables
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -15,11 +15,11 @@
 #             the CNCF-graduated project that provides DNS services for K8s.
 # -----------------------------------------------------------------------------
 image:
-  repository: coredns/coredns                                 # [DEFAULT]
+  repository: coredns/coredns # [DEFAULT]
   # tag: ""                                                   # [DEFAULT] Uses appVersion
-  pullPolicy: IfNotPresent                                    # [DEFAULT]
+  pullPolicy: IfNotPresent # [DEFAULT]
 
-imagePullSecrets: []                                          # [DEFAULT]
+imagePullSecrets: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Deployment Configuration
@@ -30,12 +30,12 @@ imagePullSecrets: []                                          # [DEFAULT]
 #   - deployment.name: 'coredns' matches EKS default for compatibility
 #     during migrations or upgrades.
 # -----------------------------------------------------------------------------
-replicaCount: 2                                               # [CUSTOM] HA mode (default is 1)
+replicaCount: 2 # [CUSTOM] HA mode (default is 1)
 
 # Deployment name override
 deployment:
-  name: coredns                                               # [CUSTOM] Match EKS default name
-  annotations: {}                                             # [DEFAULT]
+  name: coredns # [CUSTOM] Match EKS default name
+  annotations: {} # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Service Account Configuration
@@ -46,9 +46,9 @@ deployment:
 # Note: CoreDNS does not need AWS IAM access (no IRSA required).
 # -----------------------------------------------------------------------------
 serviceAccount:
-  create: true                                                # [DEFAULT]
-  name: coredns                                               # [CUSTOM]
-  annotations: {}                                             # [DEFAULT]
+  create: true # [DEFAULT]
+  name: coredns # [CUSTOM]
+  annotations: {} # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # RBAC Configuration [DEFAULT]
@@ -59,8 +59,8 @@ serviceAccount:
 #   - Namespaces: For namespace-aware DNS resolution
 # -----------------------------------------------------------------------------
 rbac:
-  create: true                                                # [DEFAULT]
-  pspEnable: false                                            # [DEFAULT] PSP deprecated in K8s 1.25+
+  create: true # [DEFAULT]
+  pspEnable: false # [DEFAULT] PSP deprecated in K8s 1.25+
 
 # -----------------------------------------------------------------------------
 # Service Configuration
@@ -73,21 +73,21 @@ rbac:
 #     uses the 10th IP in the service CIDR (e.g., 10.100.0.10 for 10.100.0.0/16)
 #   - servicePort: 53 - Standard DNS port
 # -----------------------------------------------------------------------------
-isClusterService: true                                        # [DEFAULT] Acts as cluster DNS
-serviceType: ClusterIP                                        # [DEFAULT]
-servicePort: 53                                               # [DEFAULT]
-serviceProtocol: UDP                                          # [DEFAULT]
+isClusterService: true # [DEFAULT] Acts as cluster DNS
+serviceType: ClusterIP # [DEFAULT]
+servicePort: 53 # [DEFAULT]
+serviceProtocol: UDP # [DEFAULT]
 
 service:
-  name: kube-dns                                              # [DEFAULT] Standard K8s DNS service name
-  clusterIP: ${cluster_dns_ip}                                # [CUSTOM] Calculated from service CIDR
-  annotations: {}                                             # [DEFAULT]
+  name: kube-dns # [DEFAULT] Standard K8s DNS service name
+  clusterIP: ${cluster_dns_ip} # [CUSTOM] Calculated from service CIDR
+  annotations: {} # [DEFAULT]
 
 # Additional service for TCP DNS
 # Purpose: Some DNS queries require TCP (large responses, zone transfers).
 serviceTcp:
-  enabled: true                                               # [DEFAULT]
-  annotations: {}                                             # [DEFAULT]
+  enabled: true # [DEFAULT]
+  annotations: {} # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Pod Configuration [DEFAULT]
@@ -99,19 +99,19 @@ serviceTcp:
 #     (privileged port < 1024) without running as root
 #   - drop ALL: Removes all other capabilities for least privilege
 # -----------------------------------------------------------------------------
-podLabels: {}                                                 # [DEFAULT]
-podAnnotations: {}                                            # [DEFAULT]
+podLabels: {} # [DEFAULT]
+podAnnotations: {} # [DEFAULT]
 
-podSecurityContext: {}                                        # [DEFAULT]
+podSecurityContext: {} # [DEFAULT]
 
 securityContext:
-  allowPrivilegeEscalation: false                             # [DEFAULT]
-  readOnlyRootFilesystem: true                                # [DEFAULT]
+  allowPrivilegeEscalation: false # [DEFAULT]
+  readOnlyRootFilesystem: true # [DEFAULT]
   capabilities:
     add:
-      - NET_BIND_SERVICE                                      # [DEFAULT] Allow binding to port 53
+      - NET_BIND_SERVICE # [DEFAULT] Allow binding to port 53
     drop:
-      - ALL                                                   # [DEFAULT]
+      - ALL # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Priority Class [DEFAULT]
@@ -121,9 +121,9 @@ securityContext:
 #   - DNS is always available for pod-to-pod communication
 #   - Cluster cannot function without DNS, so this must be protected
 # -----------------------------------------------------------------------------
-priorityClassName: system-cluster-critical                    # [DEFAULT]
+priorityClassName: system-cluster-critical # [DEFAULT]
 
-terminationGracePeriodSeconds: 30                             # [DEFAULT]
+terminationGracePeriodSeconds: 30 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Resource Limits
@@ -136,11 +136,11 @@ terminationGracePeriodSeconds: 30                             # [DEFAULT]
 # -----------------------------------------------------------------------------
 resources:
   limits:
-    cpu: 100m                                                 # [CUSTOM] (default is higher)
-    memory: 128Mi                                             # [CUSTOM]
+    cpu: 100m # [CUSTOM] (default is higher)
+    memory: 128Mi # [CUSTOM]
   requests:
-    cpu: 100m                                                 # [CUSTOM]
-    memory: 70Mi                                              # [CUSTOM]
+    cpu: 100m # [CUSTOM]
+    memory: 70Mi # [CUSTOM]
 
 # -----------------------------------------------------------------------------
 # Node Scheduling [DEFAULT]
@@ -151,14 +151,14 @@ resources:
 #   - In production, consider topologySpreadConstraints to ensure DNS
 #     pods are spread across availability zones.
 # -----------------------------------------------------------------------------
-nodeSelector: {}                                              # [DEFAULT]
+nodeSelector: {} # [DEFAULT]
 tolerations:
-  - key: CriticalAddonsOnly                                   # [DEFAULT]
+  - key: CriticalAddonsOnly # [DEFAULT]
     operator: Exists
-  - effect: NoSchedule                                        # [DEFAULT]
+  - effect: NoSchedule # [DEFAULT]
     key: node-role.kubernetes.io/control-plane
-affinity: {}                                                  # [DEFAULT]
-topologySpreadConstraints: []                                 # [DEFAULT]
+affinity: {} # [DEFAULT]
+topologySpreadConstraints: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Probes Configuration [DEFAULT]
@@ -170,28 +170,28 @@ topologySpreadConstraints: []                                 # [DEFAULT]
 #   - Different ports allow independent health vs readiness checks
 # -----------------------------------------------------------------------------
 livenessProbe:
-  enabled: true                                               # [DEFAULT]
+  enabled: true # [DEFAULT]
   httpGet:
-    path: /health                                             # [DEFAULT]
-    port: 8080                                                # [DEFAULT]
-    scheme: HTTP                                              # [DEFAULT]
-  initialDelaySeconds: 60                                     # [DEFAULT]
-  periodSeconds: 10                                           # [DEFAULT]
-  timeoutSeconds: 5                                           # [DEFAULT]
-  failureThreshold: 5                                         # [DEFAULT]
-  successThreshold: 1                                         # [DEFAULT]
+    path: /health # [DEFAULT]
+    port: 8080 # [DEFAULT]
+    scheme: HTTP # [DEFAULT]
+  initialDelaySeconds: 60 # [DEFAULT]
+  periodSeconds: 10 # [DEFAULT]
+  timeoutSeconds: 5 # [DEFAULT]
+  failureThreshold: 5 # [DEFAULT]
+  successThreshold: 1 # [DEFAULT]
 
 readinessProbe:
-  enabled: true                                               # [DEFAULT]
+  enabled: true # [DEFAULT]
   httpGet:
-    path: /ready                                              # [DEFAULT]
-    port: 8181                                                # [DEFAULT]
-    scheme: HTTP                                              # [DEFAULT]
-  initialDelaySeconds: 30                                     # [DEFAULT]
-  periodSeconds: 10                                           # [DEFAULT]
-  timeoutSeconds: 5                                           # [DEFAULT]
-  failureThreshold: 5                                         # [DEFAULT]
-  successThreshold: 1                                         # [DEFAULT]
+    path: /ready # [DEFAULT]
+    port: 8181 # [DEFAULT]
+    scheme: HTTP # [DEFAULT]
+  initialDelaySeconds: 30 # [DEFAULT]
+  periodSeconds: 10 # [DEFAULT]
+  timeoutSeconds: 5 # [DEFAULT]
+  failureThreshold: 5 # [DEFAULT]
+  successThreshold: 1 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # HPA Configuration [DEFAULT]
@@ -203,11 +203,11 @@ readinessProbe:
 # Note: Requires Metrics Server to be installed.
 # -----------------------------------------------------------------------------
 autoscaling:
-  enabled: false                                              # [DEFAULT]
-  minReplicas: 1                                              # [DEFAULT]
-  maxReplicas: 5                                              # [DEFAULT]
-  targetCPU: 80                                               # [DEFAULT]
-  targetMemory: ""                                            # [DEFAULT]
+  enabled: false # [DEFAULT]
+  minReplicas: 1 # [DEFAULT]
+  maxReplicas: 5 # [DEFAULT]
+  targetCPU: 80 # [DEFAULT]
+  targetMemory: "" # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Pod Disruption Budget [DEFAULT]
@@ -219,8 +219,8 @@ autoscaling:
 # Recommendation: Enable for production clusters.
 # -----------------------------------------------------------------------------
 podDisruptionBudget:
-  enabled: false                                              # [DEFAULT]
-  minAvailable: 1                                             # [DEFAULT]
+  enabled: false # [DEFAULT]
+  minAvailable: 1 # [DEFAULT]
   # maxUnavailable: 1                                         # [DEFAULT]
 
 # -----------------------------------------------------------------------------
@@ -242,19 +242,19 @@ podDisruptionBudget:
 # -----------------------------------------------------------------------------
 servers:
   - zones:
-      - zone: .                                               # [DEFAULT] Root zone
-    port: 53                                                  # [DEFAULT]
+      - zone: . # [DEFAULT] Root zone
+    port: 53 # [DEFAULT]
     plugins:
       # Error logging - Logs DNS errors to stdout for debugging
-      - name: errors                                          # [DEFAULT]
+      - name: errors # [DEFAULT]
 
       # Health check endpoint - Responds on /health:8080
       # lameduck: Delays shutdown by 5s to allow in-flight requests to complete
-      - name: health                                          # [DEFAULT]
-        configBlock: lameduck 5s                              # [CUSTOM]
+      - name: health # [DEFAULT]
+        configBlock: lameduck 5s # [CUSTOM]
 
       # Readiness endpoint - Responds on /ready:8181
-      - name: ready                                           # [DEFAULT]
+      - name: ready # [DEFAULT]
 
       # Kubernetes cluster DNS resolution
       # Purpose: Resolves service.namespace.svc.cluster.local names
@@ -263,39 +263,39 @@ servers:
       # - pods insecure: Allows pod DNS (pod-ip-addr.namespace.pod.cluster.local)
       # - fallthrough: Passes unresolved queries to next plugin
       # - ttl 30: DNS responses valid for 30 seconds
-      - name: kubernetes                                      # [DEFAULT]
-        parameters: cluster.local in-addr.arpa ip6.arpa       # [DEFAULT]
+      - name: kubernetes # [DEFAULT]
+        parameters: cluster.local in-addr.arpa ip6.arpa # [DEFAULT]
         configBlock: |-
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
           ttl 30
 
       # Prometheus metrics endpoint on port 9153
-      - name: prometheus                                      # [DEFAULT]
-        parameters: 0.0.0.0:9153                              # [DEFAULT]
+      - name: prometheus # [DEFAULT]
+        parameters: 0.0.0.0:9153 # [DEFAULT]
 
       # Forward external queries to upstream DNS
       # Uses the node's /etc/resolv.conf (typically VPC DNS in AWS)
-      - name: forward                                         # [DEFAULT]
-        parameters: . /etc/resolv.conf                        # [DEFAULT]
+      - name: forward # [DEFAULT]
+        parameters: . /etc/resolv.conf # [DEFAULT]
 
       # DNS response caching
       # Purpose: Reduces latency and upstream DNS load
       # TTL of 30 seconds - balance between freshness and performance
-      - name: cache                                           # [DEFAULT]
-        parameters: 30                                        # [CUSTOM] Cache TTL in seconds
+      - name: cache # [DEFAULT]
+        parameters: 30 # [CUSTOM] Cache TTL in seconds
 
       # Detect and break DNS loops
       # Purpose: Prevents infinite forwarding loops that could crash CoreDNS
-      - name: loop                                            # [DEFAULT]
+      - name: loop # [DEFAULT]
 
       # Hot reload Corefile changes
       # Purpose: Allows updating DNS config without pod restart
-      - name: reload                                          # [DEFAULT]
+      - name: reload # [DEFAULT]
 
       # Round-robin DNS load balancing
       # Purpose: Randomizes A/AAAA record order for client-side load distribution
-      - name: loadbalance                                     # [DEFAULT]
+      - name: loadbalance # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Additional Configuration [DEFAULT]
@@ -305,13 +305,13 @@ servers:
 #   - extraVolumes: Mount additional config files or secrets
 #   - zoneFiles: Define custom DNS zone files for internal domains
 # -----------------------------------------------------------------------------
-extraConfig: {}                                               # [DEFAULT] Additional Corefile config
+extraConfig: {} # [DEFAULT] Additional Corefile config
 
-extraVolumes: []                                              # [DEFAULT]
-extraVolumeMounts: []                                         # [DEFAULT]
-extraSecrets: []                                              # [DEFAULT]
+extraVolumes: [] # [DEFAULT]
+extraVolumeMounts: [] # [DEFAULT]
+extraSecrets: [] # [DEFAULT]
 
-zoneFiles: []                                                 # [DEFAULT] Custom zone files
+zoneFiles: [] # [DEFAULT] Custom zone files
 
 # -----------------------------------------------------------------------------
 # Prometheus/Monitoring [DEFAULT]
@@ -324,13 +324,13 @@ zoneFiles: []                                                 # [DEFAULT] Custom
 # -----------------------------------------------------------------------------
 prometheus:
   service:
-    enabled: false                                            # [DEFAULT]
+    enabled: false # [DEFAULT]
     annotations:
-      prometheus.io/scrape: "true"                            # [DEFAULT]
-      prometheus.io/port: "9153"                              # [DEFAULT]
+      prometheus.io/scrape: "true" # [DEFAULT]
+      prometheus.io/port: "9153" # [DEFAULT]
 
   monitor:
-    enabled: false                                            # [DEFAULT]
-    additionalLabels: {}                                      # [DEFAULT]
-    namespace: ""                                             # [DEFAULT]
-    interval: ""                                              # [DEFAULT]
+    enabled: false # [DEFAULT]
+    additionalLabels: {} # [DEFAULT]
+    namespace: "" # [DEFAULT]
+    interval: "" # [DEFAULT]

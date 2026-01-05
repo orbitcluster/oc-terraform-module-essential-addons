@@ -5,7 +5,7 @@
 # Legend:
 #   [CUSTOM]  - Values modified from chart defaults for this module
 #   [DEFAULT] - Chart default values (included for reference)
-#   ${var}    - Terraform templatefile variables
+#   $${var}    - Terraform templatefile variables
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -17,17 +17,17 @@
 image:
   repository: public.ecr.aws/eks/aws-load-balancer-controller # [DEFAULT]
   # tag: ""                                                   # [DEFAULT] Uses appVersion
-  pullPolicy: IfNotPresent                                    # [DEFAULT]
+  pullPolicy: IfNotPresent # [DEFAULT]
 
-imagePullSecrets: []                                          # [DEFAULT]
+imagePullSecrets: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Naming Overrides [DEFAULT]
 # Purpose: Allows customization of Kubernetes resource names.
 # Importance: Useful for multi-tenant clusters or naming conflict resolution.
 # -----------------------------------------------------------------------------
-nameOverride: ""                                              # [DEFAULT]
-fullnameOverride: ""                                          # [DEFAULT]
+nameOverride: "" # [DEFAULT]
+fullnameOverride: "" # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Cluster Configuration
@@ -38,9 +38,9 @@ fullnameOverride: ""                                          # [DEFAULT]
 #   - vpcId: Create target groups and security groups in the correct VPC
 # Without these, the controller cannot provision or manage load balancers.
 # -----------------------------------------------------------------------------
-clusterName: ${cluster_name}                                  # [CUSTOM] Required
-region: ${region}                                             # [CUSTOM] Required
-vpcId: ${vpc_id}                                              # [CUSTOM] Required
+clusterName: ${cluster_name} # [CUSTOM] Required
+region: ${region} # [CUSTOM] Required
+vpcId: ${vpc_id} # [CUSTOM] Required
 
 # -----------------------------------------------------------------------------
 # Deployment Configuration
@@ -51,13 +51,13 @@ vpcId: ${vpc_id}                                              # [CUSTOM] Require
 #   - RollingUpdate: Ensures zero-downtime during upgrades by maintaining
 #     at least one healthy replica during the update process.
 # -----------------------------------------------------------------------------
-replicaCount: 2                                               # [CUSTOM] HA mode (default is 2)
+replicaCount: 2 # [CUSTOM] HA mode (default is 2)
 
 updateStrategy:
-  type: RollingUpdate                                         # [DEFAULT]
+  type: RollingUpdate # [DEFAULT]
   rollingUpdate:
-    maxSurge: 1                                               # [DEFAULT]
-    maxUnavailable: 1                                         # [DEFAULT]
+    maxSurge: 1 # [DEFAULT]
+    maxUnavailable: 1 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Service Account Configuration
@@ -73,11 +73,11 @@ updateStrategy:
 #     * Read EC2 instance and subnet information
 # -----------------------------------------------------------------------------
 serviceAccount:
-  create: true                                                # [CUSTOM]
-  name: aws-load-balancer-controller                          # [CUSTOM]
+  create: true # [CUSTOM]
+  name: aws-load-balancer-controller # [CUSTOM]
   annotations:
-    eks.amazonaws.com/role-arn: ${role_arn}                   # [CUSTOM] IRSA annotation
-  automountServiceAccountToken: true                          # [DEFAULT]
+    eks.amazonaws.com/role-arn: ${role_arn} # [CUSTOM] IRSA annotation
+  automountServiceAccountToken: true # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # RBAC Configuration [DEFAULT]
@@ -88,7 +88,7 @@ serviceAccount:
 #   - Manage IngressClass resources
 # -----------------------------------------------------------------------------
 rbac:
-  create: true                                                # [DEFAULT]
+  create: true # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Pod Configuration [DEFAULT]
@@ -99,16 +99,16 @@ rbac:
 #   - readOnlyRootFilesystem: true - Immutable container filesystem
 #   - runAsNonRoot: true - Ensures container runs as non-root user
 # -----------------------------------------------------------------------------
-podLabels: {}                                                 # [DEFAULT]
-podAnnotations: {}                                            # [DEFAULT]
+podLabels: {} # [DEFAULT]
+podAnnotations: {} # [DEFAULT]
 
 podSecurityContext:
-  fsGroup: 65534                                              # [DEFAULT]
+  fsGroup: 65534 # [DEFAULT]
 
 securityContext:
-  allowPrivilegeEscalation: false                             # [DEFAULT]
-  readOnlyRootFilesystem: true                                # [DEFAULT]
-  runAsNonRoot: true                                          # [DEFAULT]
+  allowPrivilegeEscalation: false # [DEFAULT]
+  readOnlyRootFilesystem: true # [DEFAULT]
+  runAsNonRoot: true # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Priority Class [DEFAULT]
@@ -118,9 +118,9 @@ securityContext:
 #   - Load balancer management continues even during cluster stress
 #   - New Ingress resources are processed without delay
 # -----------------------------------------------------------------------------
-priorityClassName: system-cluster-critical                    # [DEFAULT]
+priorityClassName: system-cluster-critical # [DEFAULT]
 
-terminationGracePeriodSeconds: 10                             # [DEFAULT]
+terminationGracePeriodSeconds: 10 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Resource Limits [DEFAULT]
@@ -133,11 +133,11 @@ terminationGracePeriodSeconds: 10                             # [DEFAULT]
 # -----------------------------------------------------------------------------
 resources:
   requests:
-    cpu: 100m                                                 # [DEFAULT]
-    memory: 128Mi                                             # [DEFAULT]
+    cpu: 100m # [DEFAULT]
+    memory: 128Mi # [DEFAULT]
   limits:
-    cpu: 200m                                                 # [DEFAULT]
-    memory: 256Mi                                             # [DEFAULT]
+    cpu: 200m # [DEFAULT]
+    memory: 256Mi # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Node Scheduling [DEFAULT]
@@ -148,13 +148,13 @@ resources:
 #   - In production, consider using nodeSelector to place controllers on
 #     dedicated system node pools.
 # -----------------------------------------------------------------------------
-nodeSelector: {}                                              # [DEFAULT]
-tolerations: []                                               # [DEFAULT]
-configureDefaultAffinity: true                                # [DEFAULT] Enables pod anti-affinity
+nodeSelector: {} # [DEFAULT]
+tolerations: [] # [DEFAULT]
+configureDefaultAffinity: true # [DEFAULT] Enables pod anti-affinity
 
-affinity: {}                                                  # [DEFAULT] Custom affinity (overrides default)
+affinity: {} # [DEFAULT] Custom affinity (overrides default)
 
-topologySpreadConstraints: []                                 # [DEFAULT]
+topologySpreadConstraints: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Probes Configuration [DEFAULT]
@@ -166,11 +166,11 @@ topologySpreadConstraints: []                                 # [DEFAULT]
 # -----------------------------------------------------------------------------
 livenessProbe:
   httpGet:
-    path: /healthz                                            # [DEFAULT]
-    port: 61779                                               # [DEFAULT]
-    scheme: HTTP                                              # [DEFAULT]
-  initialDelaySeconds: 30                                     # [DEFAULT]
-  timeoutSeconds: 10                                          # [DEFAULT]
+    path: /healthz # [DEFAULT]
+    port: 61779 # [DEFAULT]
+    scheme: HTTP # [DEFAULT]
+  initialDelaySeconds: 30 # [DEFAULT]
+  timeoutSeconds: 10 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Controller Configuration [DEFAULT]
@@ -181,9 +181,9 @@ livenessProbe:
 #     web application firewall protection against common attacks
 # Note: WAF association requires additional configuration via annotations.
 # -----------------------------------------------------------------------------
-enableShield: true                                            # [DEFAULT]
-enableWaf: true                                               # [DEFAULT]
-enableWafv2: true                                             # [DEFAULT]
+enableShield: true # [DEFAULT]
+enableWaf: true # [DEFAULT]
+enableWafv2: true # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Default Target Type [DEFAULT]
@@ -198,7 +198,7 @@ enableWafv2: true                                             # [DEFAULT]
 #     * Higher latency due to extra hop
 # Can be overridden per-resource with annotations.
 # -----------------------------------------------------------------------------
-defaultTargetType: ip                                         # [DEFAULT] 'ip' or 'instance'
+defaultTargetType: ip # [DEFAULT] 'ip' or 'instance'
 
 # -----------------------------------------------------------------------------
 # Default SSL Policy [DEFAULT]
@@ -208,7 +208,7 @@ defaultTargetType: ip                                         # [DEFAULT] 'ip' o
 #   - Consider ELBSecurityPolicy-TLS13-1-2-2021-06 for stricter security
 # Can be overridden per-Ingress with annotations.
 # -----------------------------------------------------------------------------
-defaultSSLPolicy: ELBSecurityPolicy-2016-08                   # [DEFAULT]
+defaultSSLPolicy: ELBSecurityPolicy-2016-08 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Webhook Configuration [DEFAULT]
@@ -220,16 +220,16 @@ defaultSSLPolicy: ELBSecurityPolicy-2016-08                   # [DEFAULT]
 #   - webhookTLS: TLS certificates for secure webhook communication
 #     (auto-generated by cert-manager or controller if not provided)
 # -----------------------------------------------------------------------------
-enableServiceMutatorWebhook: true                             # [DEFAULT]
-serviceMutatorWebhookConfig: {}                               # [DEFAULT]
+enableServiceMutatorWebhook: true # [DEFAULT]
+serviceMutatorWebhookConfig: {} # [DEFAULT]
 
-webhookBindPort: 9443                                         # [DEFAULT]
+webhookBindPort: 9443 # [DEFAULT]
 
 # TLS certificates for webhook
 webhookTLS:
-  caCert: ""                                                  # [DEFAULT]
-  cert: ""                                                    # [DEFAULT]
-  key: ""                                                     # [DEFAULT]
+  caCert: "" # [DEFAULT]
+  cert: "" # [DEFAULT]
+  key: "" # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Ingress Class Configuration [DEFAULT]
@@ -240,12 +240,12 @@ webhookTLS:
 #   - ingressClassParams: Allows defining cluster-wide defaults via IngressClassParams CRD
 # Usage: Set spec.ingressClassName: alb in your Ingress resources.
 # -----------------------------------------------------------------------------
-createIngressClassResource: true                              # [DEFAULT]
-ingressClass: alb                                             # [DEFAULT]
+createIngressClassResource: true # [DEFAULT]
+ingressClass: alb # [DEFAULT]
 ingressClassParams:
-  create: true                                                # [DEFAULT]
-  name: alb                                                   # [DEFAULT]
-  spec: {}                                                    # [DEFAULT]
+  create: true # [DEFAULT]
+  name: alb # [DEFAULT]
+  spec: {} # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Service Configuration [DEFAULT]
@@ -255,8 +255,8 @@ ingressClassParams:
 #   - Prometheus/monitoring access to controller metrics
 # -----------------------------------------------------------------------------
 service:
-  port: 443                                                   # [DEFAULT]
-  targetPort: 9443                                            # [DEFAULT]
+  port: 443 # [DEFAULT]
+  targetPort: 9443 # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Additional Arguments [DEFAULT]
@@ -266,7 +266,7 @@ service:
 #   - Feature flags: --feature-gates=...
 #   - Custom configurations not exposed via values
 # -----------------------------------------------------------------------------
-extraArgs: {}                                                 # [DEFAULT]
+extraArgs: {} # [DEFAULT]
 
 # Example extra args:
 # extraArgs:
@@ -281,9 +281,9 @@ extraArgs: {}                                                 # [DEFAULT]
 #   - extraEnv: Custom environment variables (e.g., AWS_STS_REGIONAL_ENDPOINTS)
 #   - extraVolumes/Mounts: Mounting additional certificates or configs
 # -----------------------------------------------------------------------------
-extraEnv: []                                                  # [DEFAULT]
-extraVolumes: []                                              # [DEFAULT]
-extraVolumeMounts: []                                         # [DEFAULT]
+extraEnv: [] # [DEFAULT]
+extraVolumes: [] # [DEFAULT]
+extraVolumeMounts: [] # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Metrics/Monitoring [DEFAULT]
@@ -295,11 +295,11 @@ extraVolumeMounts: []                                         # [DEFAULT]
 # Note: Requires Prometheus Operator to be installed in the cluster.
 # -----------------------------------------------------------------------------
 serviceMonitor:
-  enabled: false                                              # [DEFAULT]
-  namespace: ""                                               # [DEFAULT]
-  interval: 60s                                               # [DEFAULT]
-  scrapeTimeout: 30s                                          # [DEFAULT]
-  additionalLabels: {}                                        # [DEFAULT]
+  enabled: false # [DEFAULT]
+  namespace: "" # [DEFAULT]
+  interval: 60s # [DEFAULT]
+  scrapeTimeout: 30s # [DEFAULT]
+  additionalLabels: {} # [DEFAULT]
 
 # -----------------------------------------------------------------------------
 # Pod Disruption Budget [DEFAULT]
@@ -311,6 +311,6 @@ serviceMonitor:
 # Recommendation: Enable for production clusters with replicaCount >= 2.
 # -----------------------------------------------------------------------------
 podDisruptionBudget:
-  enabled: false                                              # [DEFAULT]
-  minAvailable: 1                                             # [DEFAULT]
-  maxUnavailable: 1                                           # [DEFAULT]
+  enabled: false # [DEFAULT]
+  minAvailable: 1 # [DEFAULT]
+  maxUnavailable: 1 # [DEFAULT]

@@ -28,3 +28,15 @@ output "vpc_id" {
 output "region" {
   value = "us-east-1"
 }
+
+output "bu_id" {
+  value = "example-bu"
+}
+
+output "app_id" {
+  value = "example-app"
+}
+
+output "env" {
+  value = "test"
+}
