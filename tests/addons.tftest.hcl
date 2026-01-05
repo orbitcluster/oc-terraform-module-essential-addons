@@ -23,19 +23,19 @@ run "plan" {
 
   # Verify Cluster Autoscaler IAM role is created
   assert {
-    condition     = aws_iam_role.cluster_autoscaler.name == "test-cluster-cluster-autoscaler"
+    condition     = aws_iam_role.cluster_autoscaler_role.name == "test-cluster-cluster-autoscaler-role"
     error_message = "Cluster Autoscaler IAM role name did not match expected value"
   }
 
   # Verify VPC CNI IAM role is created
   assert {
-    condition     = aws_iam_role.vpc_cni_role.name == "test-cluster-vpc-cni"
+    condition     = aws_iam_role.vpc_cni_role.name == "test-cluster-vpc-cni-role"
     error_message = "VPC CNI IAM role name did not match expected value"
   }
 
   # Verify AWS LB Controller IAM role is created
   assert {
-    condition     = aws_iam_role.aws_lb_controller.name == "test-cluster-aws-lb-controller"
+    condition     = aws_iam_role.aws_lb_controller_role.name == "test-cluster-aws-lb-controller-role"
     error_message = "AWS LB Controller IAM role name did not match expected value"
   }
 }
