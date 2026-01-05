@@ -15,10 +15,10 @@ run "plan" {
     cluster_oidc_provider_arn          = run.setup.cluster_oidc_provider_arn
     cluster_oidc_issuer_url            = run.setup.cluster_oidc_issuer_url
     vpc_id                             = run.setup.vpc_id
-    region                             = run.setup.region
-    bu_id                              = run.setup.bu_id
-    app_id                             = run.setup.app_id
-    env                                = run.setup.env
+
+    bu_id  = run.setup.bu_id
+    app_id = run.setup.app_id
+    env    = run.setup.env
   }
 
   # Verify Cluster Autoscaler IAM role is created

@@ -29,7 +29,7 @@ resource "helm_release" "aws_lb_controller" {
   values = [
     templatefile("${path.module}/yamls/aws-lb-controller-values.yaml", {
       cluster_name = var.cluster_name
-      region       = var.region
+      region       = data.aws_region.current.name
       vpc_id       = var.vpc_id
       role_arn     = aws_iam_role.aws_lb_controller_role.arn
     })

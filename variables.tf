@@ -97,10 +97,7 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "region" {
-  description = "AWS region where the EKS cluster is deployed"
-  type        = string
-}
+
 
 # Cluster Service IP CIDR is a dynamic value we will receive after eks cluster creation
 # This is required for coredns addon
