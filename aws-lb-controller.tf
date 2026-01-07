@@ -35,5 +35,8 @@ resource "helm_release" "aws_lb_controller" {
     })
   ]
 
-  depends_on = [aws_iam_role_policy.aws_lb_controller_pa]
+  depends_on = [
+    aws_iam_role_policy.aws_lb_controller_pa,
+    helm_release.vpc_cni
+  ]
 }

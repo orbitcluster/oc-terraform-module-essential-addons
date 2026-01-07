@@ -19,15 +19,15 @@
 # -----------------------------------------------------------------------------
 init:
   image:
-    region: ${region} # [CUSTOM] Match cluster region
-    account: 602401143452 # [DEFAULT] The account ID 602401143452 is AWS's official EKS ECR account that hosts the VPC CNI container images.
-    # tag: ""                                                 # [DEFAULT] Uses appVersion
+    region: "${region}" # [CUSTOM] Match cluster region
+    account: "602401143452" # [DEFAULT] AWS EKS ECR account
+    # tag: ""
     pullPolicy: IfNotPresent # [DEFAULT]
 
 image:
-  region: ${region} # [CUSTOM] Match cluster region
-  account: 602401143452 # [DEFAULT] The account ID 602401143452 is AWS's official EKS ECR account that hosts the VPC CNI container images.
-  # tag: ""                                                   # [DEFAULT] Uses appVersion
+  region: "${region}" # [CUSTOM] Match cluster region
+  account: "602401143452" # [DEFAULT] AWS EKS ECR account
+  # tag: ""
   pullPolicy: IfNotPresent # [DEFAULT]
 
 imagePullSecrets: [] # [DEFAULT]

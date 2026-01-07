@@ -313,4 +313,4 @@ serviceMonitor:
 podDisruptionBudget:
   enabled: false # [DEFAULT]
   minAvailable: 1 # [DEFAULT]
-  maxUnavailable: 1 # [DEFAULT]
+  # maxUnavailable: 1 # [DEFAULT]
