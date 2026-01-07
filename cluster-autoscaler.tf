@@ -34,5 +34,8 @@ resource "helm_release" "cluster_autoscaler" {
     })
   ]
 
-  depends_on = [aws_iam_role_policy.cluster_autoscaler_pa]
+  depends_on = [
+    aws_iam_role_policy.cluster_autoscaler_pa,
+    helm_release.vpc_cni
+  ]
 }

@@ -16,4 +16,6 @@ resource "helm_release" "coredns" {
       cluster_dns_ip = local.cluster_dns_ip
     })
   ]
+
+  depends_on = [helm_release.vpc_cni]
 }

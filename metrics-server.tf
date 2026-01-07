@@ -14,4 +14,6 @@ resource "helm_release" "metrics_server" {
   values = [
     file("${path.module}/yamls/metrics-server-values.yaml")
   ]
+
+  depends_on = [helm_release.vpc_cni]
 }
