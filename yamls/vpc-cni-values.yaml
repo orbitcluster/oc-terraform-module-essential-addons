@@ -55,9 +55,10 @@ fullnameOverride: aws-node # [DEFAULT]
 # Note: IRSA annotation is managed by EKS, not this Helm chart.
 # -----------------------------------------------------------------------------
 serviceAccount:
-  create: false # [CUSTOM] Use pre-existing aws-node SA
+  create: true # [CUSTOM] Let Helm manage the SA
   name: aws-node # [CUSTOM] Pre-existing service account
-  annotations: {} # [DEFAULT] IRSA annotation added separately
+  annotations:
+    eks.amazonaws.com/role-arn: "${role_arn}" # [CUSTOM] IRSA annotation
 
 # -----------------------------------------------------------------------------
 # CRD Configuration [DEFAULT]

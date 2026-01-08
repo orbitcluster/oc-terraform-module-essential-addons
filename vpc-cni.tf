@@ -28,28 +28,10 @@ resource "helm_release" "vpc_cni" {
 
   values = [
     templatefile("${path.module}/yamls/vpc-cni-values.yaml", {
-      region = data.aws_region.current.name
+      region   = data.aws_region.current.name
+      role_arn = aws_iam_role.vpc_cni_role.arn
     })
   ]
 
   depends_on = [aws_iam_role_policy_attachment.vpc_cni_pa]
-}
-
-# Annotate the existing aws-node service account with IRSA role
-resource "kubernetes_annotations" "vpc_cni_sa" {
-  api_version = "v1"
-  kind        = "ServiceAccount"
-
-  metadata {
-    name      = "aws-node"
-    namespace = local.kube_system_namespace
-  }
-
-  annotations = {
-    "eks.amazonaws.com/role-arn" = aws_iam_role.vpc_cni_role.arn
-  }
-
-  force = true
-
-  depends_on = [aws_iam_role.vpc_cni_role]
 }
