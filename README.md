@@ -13,6 +13,7 @@
 | **CoreDNS**                      | Kubernetes DNS service                                   | Helm              | [Readme](docs/coredns.md)            |
 | **AWS Load Balancer Controller** | Manages ALB/NLB for Kubernetes services                  | Helm              | [Readme](docs/aws-lb-controller.md)  |
 | **Metrics Server**               | Resource metrics for HPA/VPA                             | Helm              | [Readme](docs/metrics-server.md)     |
+| **AWS EBS CSI Driver**           | Manages EBS volumes for PersistentVolumes                | Helm              | [Readme](docs/aws-ebs-csi-driver.md) |
 | **EKS Pod Identity Agent**       | Simplified IAM permissions for pods                      | EKS Addon         | [Readme](docs/pod-identity-agent.md) |
 
 ## Prerequisites
