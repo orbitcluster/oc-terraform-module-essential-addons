@@ -20,12 +20,27 @@ node:
     name: ebs-csi-node-sa
     annotations: {}
 
+##################IMPORTANT##################
+# gp3-delete is the default storage class
+# gp3-retain is the storage class for retained volumes
+# We can add capabilities for different types of volumes
+# e.g gp2, gp3, io1, io2, st1, sc1, etc.
+##################IMPORTANT##################
 storageClasses:
-  - name: gp3
+  - name: gp3-delete
     annotations:
       storageclass.kubernetes.io/is-default-class: "true"
     allowVolumeExpansion: true
     volumeBindingMode: WaitForFirstConsumer
     reclaimPolicy: Delete
+    parameters:
+      type: gp3
+
+  - name: gp3-retain
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "false"
+    allowVolumeExpansion: true
+    volumeBindingMode: WaitForFirstConsumer
+    reclaimPolicy: Retain
     parameters:
       type: gp3
