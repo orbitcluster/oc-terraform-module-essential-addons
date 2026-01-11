@@ -88,6 +88,12 @@ variable "pod_identity_agent_version" {
   default     = null
 }
 
+variable "aws_ebs_csi_driver_version" {
+  description = "Version of the AWS EBS CSI Driver Helm chart"
+  type        = string
+  default     = "2.33.0"
+}
+
 ##################################################
 
 ################NETWORKING INFO###################
